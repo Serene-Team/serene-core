@@ -7,6 +7,7 @@
 -- import services
 local pathfindingService = game:GetService("PathfindingService")
 local insertService = game:GetService("InsertService")
+local httpService = game:GetService("HttpService")
 -- init module
 local module = {}
 local monsterClass = {}
@@ -41,6 +42,10 @@ function monsterClass:findNearestPlayer()
 	local target = GetNearestPlayer(70, enemyRoot)
 	-- return the target
 	return target
+end
+-- setReward: set the exp and loot table reward data
+function monsterClass:setReward()
+	
 end
 -- pathfindToPosition: pathfind to a 3D position in the world
 function monsterClass:pathfindToPosition(fromPos, toPos, enableDynamic)
@@ -123,6 +128,7 @@ function getRandomInPart(part)
 	local randomCFrame = part.CFrame * CFrame.new(random:NextNumber(-part.Size.X/2,part.Size.X/2), random:NextNumber(-part.Size.Y/2,part.Size.Y/2), random:NextNumber(-part.Size.Z/2,part.Size.Z/2))
 	return randomCFrame
 end
+-- spawnEntity: spawns a new instance of a monster
 module.spawnEntity = function (spawnPlace, entityId)
 	--7214764565
 	if game.Workspace.spawnStorage:FindFirstChild(entityId) == nil then
@@ -135,6 +141,12 @@ module.spawnEntity = function (spawnPlace, entityId)
 	-- calc position to spawn
 	local pos = getRandomInPart(spawnPlace)
 	mob:MoveTo(pos.Position)
+end
+-- getLootInfo: returns the loot info for a monster from the REST api
+function module.getLootInfo(monster)
+	local rawData = httpService:GetAsync("http://serene-api.herokuapp.com/loot_table/"..monster)
+	local info = httpService:JSONDecode(rawData)
+	return info
 end
 
 return module
