@@ -118,6 +118,18 @@ function forgeClass:swing()
                     warn("global pvp is disabled, to enable it create a item inside of ServerStorage named 'pvpEnabled'")
                 end
             else
+                local killers = hit.Parent:FindFirstChild("killers")
+                if killers == nil then
+                    killers = Instance.new("Folder")
+                    killers.Name = "killers"
+                    killers.Parent = hit.Parent
+                end
+                if killers:FindFirstChild(player.Name) == nil then
+                    local killerTag = Instance.new("StringValue")
+                    killerTag.Name = player.Name
+                    killerTag.Value = player.Name
+                    killerTag.Parent = killers
+                end
                 hit.Parent.Humanoid:TakeDamage(damageCalc)
             end
         end

@@ -8,6 +8,7 @@
 local pathfindingService = game:GetService("PathfindingService")
 local insertService = game:GetService("InsertService")
 local httpService = game:GetService("HttpService")
+local item = require(game.ReplicatedStorage.modules.item)
 -- init module
 local module = {}
 local monsterClass = {}
@@ -43,9 +44,28 @@ function monsterClass:findNearestPlayer()
 	-- return the target
 	return target
 end
--- setReward: set the exp and loot table reward data
-function monsterClass:setReward()
-	
+-- setReward: set the exp and loot table reward data, takes in the mob id for the loot
+function monsterClass:setReward(loot_table)
+	local root = self.root
+	if root.Parent:FindFirstChildOfClass("Humanoid") == nil then
+		error("Failed to set reward: monster must have a humanoid!")
+	end
+	local humanoid = root.Parent:FindFirstChildOfClass("Humanoid")
+	-- fetch the loot data
+	local loot_data = module.getLootInfo(loot_table)
+	humanoid.Died:Connect(function ()
+		-- get all of the players that killed the mob
+		local players = {}
+		for index, player in pairs(root.Parent.killers:GetChildren()) do
+			if game.Players[player.Value] ~= nil then
+				table.insert(players, game.Players[player.Value])
+			end
+		end
+		-- drop the items
+		item.dropItems(loot_data.data.loot_data, players)
+		-- TODO: Give EXP
+		root.Parent:Destroy()
+	end)
 end
 -- pathfindToPosition: pathfind to a 3D position in the world
 function monsterClass:pathfindToPosition(fromPos, toPos, enableDynamic)
@@ -112,7 +132,6 @@ function monsterClass:onTouch(renderMesh, callback)
 	end)
 	
 end
-
 
 -- register: return a new monsterClass
 module.register = function(root)
