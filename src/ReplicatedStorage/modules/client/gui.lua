@@ -27,5 +27,12 @@ module.moveAway = function (uiObject)
 	wait(1)
 	uiObject:Destroy()
 end
+module.printChatMessage = function(message, textColor, textSize)
+	game.StarterGui:SetCore("ChatMakeSystemMessage", {
+		Text = message,
+		Color = textColor,
+		TextSize = textSize
+	})
+end
 
 return module
