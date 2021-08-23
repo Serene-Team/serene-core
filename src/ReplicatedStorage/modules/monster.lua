@@ -9,6 +9,7 @@ local pathfindingService = game:GetService("PathfindingService")
 local insertService = game:GetService("InsertService")
 local httpService = game:GetService("HttpService")
 local item = require(game.ReplicatedStorage.modules.item)
+local levels = require(game.ReplicatedStorage.modules.levels)
 -- init module
 local module = {}
 local monsterClass = {}
@@ -63,7 +64,13 @@ function monsterClass:setReward(loot_table)
 		end
 		-- drop the items
 		item.dropItems(loot_data.data.loot_data, players)
-		-- TODO: Give EXP
+		-- give xp, and remove tags
+		for i, player in pairs(players) do
+			levels.grantXp(player, loot_data.data.loot_xp)
+			if player:GetAttribute("Damage") ~= nil then
+				player:SetAttribute("Damage", nil)
+			end
+		end
 		root.Parent:Destroy()
 	end)
 end
@@ -82,7 +89,6 @@ function monsterClass:pathfindToPosition(fromPos, toPos, enableDynamic)
 	local agent = pathfindingService:CreatePath({
 		-- no, you cannot jump :)
 		AgentCanJump = false
-		-- TODO: Fix width and height of the character
 	})
 	-- compute the path with ComputeAsync
 	agent:ComputeAsync(fromPos, toPos)

@@ -12,11 +12,14 @@ module.playSong = function(place)
     if sounds[place] == nil then
         error("Failed to play sound: "..place.." is not a valid member of table sounds!")
     else
-        local soundInst = Instance.new("Sound")
-        soundInst.SoundId = "rbxassetid://"..sounds[place]
-        soundInst.Looped = true
-		soundInst.Parent = game.Workspace
-		soundInst:Play()
+        if game.Workspace:FindFirstChild("bgSound") == nil then
+            local soundInst = Instance.new("Sound")
+            soundInst.Name = "bgSound"
+            soundInst.SoundId = "rbxassetid://"..sounds[place]
+            soundInst.Looped = true
+            soundInst.Parent = game.Workspace
+            soundInst:Play()
+        end
     end
 end
 module.enableFootsteps = function(player)

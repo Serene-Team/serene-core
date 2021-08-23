@@ -1,6 +1,5 @@
 local module = {}
 local mathLibrary = require(game.ReplicatedStorage.modules.math)
-local levels = mathLibrary.import("level")
 module.getGameUi = function()
 	local ui = game.Players.LocalPlayer.PlayerGui:WaitForChild("gameUi")
 	return ui
@@ -41,10 +40,16 @@ module.printChatMessage = function(message, textColor, textSize)
 end
 -- setXpBarData: tween the size of the xp bar to a point
 module.setXpBarData = function(currentLevel, xp)
+	local levels = mathLibrary.import("level")
 	local xpCap = levels.xpToLevelUp(currentLevel)
 	local currentXp = 100
 	local gameUi = module.getGameUi()
 	local xpBar = gameUi.xpBar
-	xpBar.xp:TweenSize(UDim2.new(xp/currentLevel, 0, 0, 8))
+	print((xp/xpCap))
+	if (xp/xpCap) == 1 then
+		xpBar.xp:TweenSize(UDim2.new(0, 0, 0, 8))
+	else
+		xpBar.xp:TweenSize(UDim2.new(xp/xpCap, 0, 0, 8))
+	end
 end
 return module
