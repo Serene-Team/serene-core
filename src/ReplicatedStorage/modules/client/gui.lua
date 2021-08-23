@@ -1,5 +1,10 @@
 local module = {}
-
+local mathLibrary = require(game.ReplicatedStorage.modules.math)
+local levels = mathLibrary.import("level")
+module.getGameUi = function()
+	local ui = game.Players.LocalPlayer.PlayerGui:WaitForChild("gameUi")
+	return ui
+end
 module.waitForMouseover = function (uiObject, text)
 	if not uiObject:IsA("GuiObject") then
 		error("waitForMouseover only works on GuiObjects")
@@ -34,5 +39,12 @@ module.printChatMessage = function(message, textColor, textSize)
 		TextSize = textSize
 	})
 end
-
+-- setXpBarData: tween the size of the xp bar to a point
+module.setXpBarData = function(currentLevel, xp)
+	local xpCap = levels.xpToLevelUp(currentLevel)
+	local currentXp = 100
+	local gameUi = module.getGameUi()
+	local xpBar = gameUi.xpBar
+	xpBar.xp:TweenSize(UDim2.new(xp/currentLevel, 0, 0, 8))
+end
 return module

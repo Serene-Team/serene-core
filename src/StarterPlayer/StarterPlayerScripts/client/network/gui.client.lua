@@ -1,0 +1,5 @@
+local updateXpBar = game.ReplicatedStorage.events:WaitForChild("updateXpBar")
+local gui = require(game.ReplicatedStorage.modules.client.gui)
+updateXpBar.OnClientEvent:Connect(function(xp, currentLevel)
+    gui.setXpBarData(currentLevel, xp)
+end)

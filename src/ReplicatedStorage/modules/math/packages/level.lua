@@ -5,6 +5,7 @@
 --]]
 
 local module = {}
+local gui = require(game.ReplicatedStorage.modules.client.gui)
 -- xpToLevelUp: compute how much exp the player needs to level up
 module.xpToLevelUp = function(currentLevel)
     -- the math goes like this:
