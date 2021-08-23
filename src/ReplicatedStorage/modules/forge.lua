@@ -50,25 +50,11 @@ end
 -- setValue: set a value inside of the config
 function forgeClass:setValue(key, value)
     if self.config[key] ~= nil then
-        warn("data overwrited. old: "..self.config[key].." new: "..value)
+		warn("data overwrited.")	
     end
     self.config[key] = value
 end
--- swingConnect: await the tool swing, and run a function.
--- NOTE: This wraps the Activated event on tools
-function forgeClass:swingConnect(callback)
-    local tool = self.tool
-    -- make sure we don't connect multiple times
-    if self:getValue("hasConnectedSwing") == nil then
-        self:setValue("hasConnectedSwing", true)
-        tool.Activated:Connect(function()
-            -- execute the callback function
-            callback()
-        end)
-    else
-        warn("Failed to connect: you can only connect to this event once!")
-    end
-end
+
 -- swing: swing the tool
 function forgeClass:swing()
     -- prep everything before we do any tool animations/damage
