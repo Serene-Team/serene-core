@@ -22,6 +22,12 @@ module.playSong = function(place)
         end
     end
 end
+module.playLocalSound = function(soundId)
+    local soundItem = Instance.new("Sound")
+    soundItem.SoundId = "rbxassetid://"..soundId
+    soundService:PlayLocalSound(soundItem)
+end
+
 module.enableFootsteps = function(player)
 	print("loading footsteps.")
 	-- TODO
