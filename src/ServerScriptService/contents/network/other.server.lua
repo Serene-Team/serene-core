@@ -5,3 +5,6 @@ local network = require(game.ReplicatedStorage.modules.network)
 network.event("playLocalSound", function()
     
 end)
+network.event("teleportPlayer", function()
+    
+end)
