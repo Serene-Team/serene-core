@@ -17,4 +17,8 @@ playersService.PlayerAdded:Connect(function(player)
 	if game.PlaceId ~= 7193001633 then
 		teleportServer.saveCurrentPlace(player)
 	end
+	-- create zone files
+	local currentZone = Instance.new("ObjectValue")
+	currentZone.Parent = player
+	currentZone.Name = "currentZone"
 end)

@@ -1,3 +1,9 @@
+--[[
+    File name: quest.lua
+    Description: quest system for serene
+    Author: oldmilk
+--]]
+
 local module = {}
 
 local dataStore = require(game.ReplicatedStorage.DataStore2)
