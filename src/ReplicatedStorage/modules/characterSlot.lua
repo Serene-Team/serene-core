@@ -24,14 +24,4 @@ module.updateSlotId = function(player, slotId)
     -- return the slotId
     return slotId
 end
--- getLastPlace: get the last place a players character slot was in
-module.getLastPlace = function(player)
-    local currentSlot = module.getPlayerCharacterSlotid(player)
-    if currentSlot == nil then
-        warn("Failed to perform getLastPlace: Character slot is nil, assuming slot id is 1")
-        currentSlot = 1
-    end
-    local lastPlaceStore = datastore("lastPlayerPlace"..currentSlot, player)
-    return lastPlaceStore:Get(7193015497)
-end
 return module

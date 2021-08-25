@@ -12,7 +12,7 @@ local placeDesc = {
 }
 local placeIcons = {
     ["Serene"] = "rbxassetid://7193700987",
-    ["Ashtown"] = "rbxassetid://rbxassetid://7321958897"
+    ["Ashtown"] = "rbxassetid://7321958897"
 }
 
 
