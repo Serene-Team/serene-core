@@ -25,6 +25,7 @@ network.remotefunction("confirmPurchase", function (player, item, shopId, amount
 	local playerCoins = currency.getCoins(player)
 	if (currentShopPrice * itemAmount) > playerCoins then
 		warn("Failed to confirm purchase: not enough money!")
+		return "FailToPurchase"
 	end
 	local tickCounter = 1
 	currency.takeCoins(player, (currentShopPrice * itemAmount))

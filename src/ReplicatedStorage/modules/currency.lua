@@ -1,24 +1,25 @@
 local module = {}
-local dataStore = require(game.ReplicatedStorage.DataStore2)
-local characterSlot = require(game.ReplicatedStorage.modules.characterSlot)
+local ridge = require(game.ReplicatedStorage.modules.ridge)
 module.giveCoins = function(player, amount)
-    local currentSlot = characterSlot.getPlayerCharacterSlotid(player)
-    local coinStore = dataStore("playerCoinStore"..currentSlot, player)
-    local currentCoins = coinStore:Get(0)
-    coinStore:Set(currentCoins + amount)
+    local coinStore = ridge.loadPlayerDatastore("playerCoinStore", player)
+    local currentCoins = coinStore:getAsync(0)
+    coinStore:setAsync(currentCoins + amount)
     return currentCoins + amount
 end
 module.getCoins = function(player)
-    local currentSlot = characterSlot.getPlayerCharacterSlotid(player)
-    local coinStore = dataStore("playerCoinStore"..currentSlot, player)
-    local currentCoins = coinStore:Get(0)
+    local coinStore =  ridge.loadPlayerDatastore("playerCoinStore", player)
+    local currentCoins = coinStore:getAsync()
+    print(currentCoins)
+    if currentCoins == nil then
+        currentCoins = 0
+    end
+    print(currentCoins)
     return currentCoins
 end
 module.takeCoins = function(player, amount)
-    local currentSlot = characterSlot.getPlayerCharacterSlotid(player)
-    local coinStore = dataStore("playerCoinStore"..currentSlot, player)
-    local currentCoins = coinStore:Get(0)
-    coinStore:Set(currentCoins - amount)
+    local coinStore =  ridge.loadPlayerDatastore("playerCoinStore", player)
+    local currentCoins = module.getCoins(player)
+    coinStore:setAsync(currentCoins - amount)
     return currentCoins - amount
 end
 return module

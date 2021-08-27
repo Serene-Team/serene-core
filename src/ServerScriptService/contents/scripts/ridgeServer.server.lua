@@ -3,7 +3,7 @@
     Description: auto save data when the player leaves the game. DO NOT move this into the main ridge module
     Author: oldmilk
 --]]
-game.Players.PlayerRemoving:Connect(function(player)
+function saveData(player)
     local indexKey = shared["ridgeDatabase_"..player.UserId]
     if indexKey == nil then
         print("nothing to save!")
@@ -25,5 +25,16 @@ game.Players.PlayerRemoving:Connect(function(player)
                 print("Save fail: cache empty, but database populated!")
             end
         end
+    end   
+end
+game.Players.ChildRemoved:Connect(function(player)
+    saveData(player)
+end)
+-- setting up a BindToClose allows the server to save data
+game:BindToClose(function()
+    print("Server shutting down, allow server to save data.")
+    for i, player in pairs(game.Players:GetChildren()) do
+        saveData(player)
     end
 end)
+

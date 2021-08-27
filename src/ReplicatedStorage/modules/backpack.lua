@@ -4,11 +4,14 @@
     Author: oldmilk
 --]]
 local module = {}
-local dataStore = require(game.ReplicatedStorage.DataStore2)
+local ridge = require(game.ReplicatedStorage.modules.ridge)
 module.loadBackpack = function(player)
     -- load backpack
-    local backpackStore = dataStore("playerBackpackData", player)
-	local backpack = backpackStore:Get({})
+    local backpackStore = ridge.loadPlayerDatastore("playerBackpack", player)
+	local backpack = backpackStore:getAsync({})
+	if backpack == nil then
+		backpack = {}
+	end
 end
 module.saveBackpack = function (player)
 	local items = player.Backpack:GetChildren() 	
@@ -19,7 +22,7 @@ module.saveBackpack = function (player)
 			itemData = item:GetAttributes()
 		}
 	end
-	local backpackStore = dataStore("playerBackpackData", player)
-	backpackStore:Set(dataSave)
+	local backpackStore = ridge.loadPlayerDatastore("playerBackpack", player)
+	backpackStore:setAsync(dataSave)
 end
 return module

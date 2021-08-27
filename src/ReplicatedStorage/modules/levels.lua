@@ -13,10 +13,7 @@ local levelsMath = mathLibrary.import("level")
 -- core functions
 function getLevelData(player)
     local playerLevelDataStore = ridge.loadPlayerDatastore("playerLevelData", player)        
-    local playerLevelData = playerLevelDataStore:getAsync({
-        currentLevel = 1,
-        currentXp = 0
-    })
+    local playerLevelData = playerLevelDataStore:getAsync()
     if playerLevelData == nil then
         return {
             currentLevel = 1,

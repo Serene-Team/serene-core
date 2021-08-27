@@ -10,19 +10,13 @@ https://serene-api.herokuapp.com/item/[item]
 ```
 
 
-## Teleport
-Example:
+## DataStore
+Serene uses a datastore module called ridge, heres some example code:
+
+### Set data
 ```lua
-local teleport = ...
-local playerTeleport = teleportMod.new(game.Players.OtherLuaDeveloper)
--- Client Only:
-playerTeleport:TeleportAsync({
-    placeId = 1233333,
-    extraTeleport = {
-        -- default
-        example = "Bob"
-    }
-})
--- Server Only:
-playerTeleport:Teleport(Vector3.new(0, 0, 0))
+local ridge = ...
+local coinStore = ridge.loadPlayerDatastore("coinStore", game.Players.OtherLuaDeveloper)
+-- data is put into cache, when the player leaves we save the data in cache to roblox datastores
+coinStore:setAsync(100)
 ```
