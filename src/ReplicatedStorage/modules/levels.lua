@@ -5,23 +5,30 @@
 --]]
 
 local module = {}
-local dataStore = require(game.ReplicatedStorage.DataStore2)
+local ridge = require(game.ReplicatedStorage.modules.ridge)
 local mathLibrary = require(game.ReplicatedStorage.modules.math)
 local extra = require(game.ReplicatedStorage.modules.extra)
 local levelsMath = mathLibrary.import("level")
 --5736400107
 -- core functions
 function getLevelData(player)
-    local playerLevelDataStore = dataStore("playerLevelData", player)        
-    local playerLevelData = playerLevelDataStore:Get({
+    local playerLevelDataStore = ridge.loadPlayerDatastore("playerLevelData", player)        
+    local playerLevelData = playerLevelDataStore:getAsync({
         currentLevel = 1,
         currentXp = 0
     })
-    return playerLevelData
+    if playerLevelData == nil then
+        return {
+            currentLevel = 1,
+            currentXp = 0
+        }
+    else
+        return playerLevelData
+    end
 end
 function setLevelData(player, value)
-    local playerLevelDataStore = dataStore("playerLevelData", player)        
-    playerLevelDataStore:Set(value)
+    local playerLevelDataStore = ridge.loadPlayerDatastore("playerLevelData", player)        
+    playerLevelDataStore:setAsync(value)
 end
 function playLevelUpSound(player)
     game.ReplicatedStorage.events:WaitForChild("playLocalSound"):FireClient(player, 5736400107)

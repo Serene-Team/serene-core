@@ -16,8 +16,8 @@ module.saveCurrentPlace = function(player)
         warn("Failed to perform getLastPlace: Character slot is nil, assuming slot id is 1")
         currentSlot = 1
     end
-    local lastPlaceStore = dataStore("lastPlayerPlace"..currentSlot, player)
-    lastPlaceStore:Set(game.PlaceId)
+    local lastPlaceStore = ridge.loadPlayerDatastore("lastPlayerPlace", player)
+    lastPlaceStore:setAsync(game.PlaceId)
 end
 module.getCurrentPlace = function(player)
     local currentSlot = characterSlot.getPlayerCharacterSlotid(player)
@@ -26,6 +26,6 @@ module.getCurrentPlace = function(player)
         currentSlot = 1
     end
     local lastPlaceStore = ridge.loadPlayerDatastore("lastPlayerPlace", player)
-    return lastPlaceStore:Get(7207718284)
+    return lastPlaceStore:getAsync()
 end
 return module
