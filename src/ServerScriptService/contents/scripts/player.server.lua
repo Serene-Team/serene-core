@@ -2,6 +2,7 @@ local playersService = game.Players
 local playerList = require(game.ReplicatedStorage.modules.playerlist)
 local backpack = require(game.ReplicatedStorage.modules.backpack)
 local quest = require(game.ReplicatedStorage.modules.quest)
+local ridge = require(game.ReplicatedStorage.modules.ridge)
 local levels = require(game.ReplicatedStorage.modules.levels)
 local teleportServer = require(game.ReplicatedStorage.modules.teleportServer)
 playersService.PlayerAdded:Connect(function(player)
@@ -9,16 +10,14 @@ playersService.PlayerAdded:Connect(function(player)
     player.CharacterAdded:Connect(function()
 		print(player.DisplayName.." character loaded!")
 		backpack.saveBackpack(player)
-		quest.sendQuestAlert(player, "Quest Started: Mary's Quest")
-		-- load player info
-		levels.loadLevelData(player)	
+		quest.sendQuestAlert(player, "Quest Started: Mary's Quest")	
+		if game.PlaceId ~= 7193001633 then
+			teleportServer.saveCurrentPlace(player)
+		end
 	end)
-	playerList.addPlayerInfo(player)
-	if game.PlaceId ~= 7193001633 then
-		teleportServer.saveCurrentPlace(player)
-	end
-	-- create zone files
-	local currentZone = Instance.new("ObjectValue")
-	currentZone.Parent = player
-	currentZone.Name = "currentZone"
+	-- load player info
+	levels.loadLevelData(player)
+	local points = ridge.loadPlayerDatastore("points", player)	
+	points:setAsync(20)
+	print("Current points:"..points:getAsync())
 end)
