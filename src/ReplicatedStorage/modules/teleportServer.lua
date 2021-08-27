@@ -6,7 +6,7 @@
 
 local module = {}
 local characterSlot = require(game.ReplicatedStorage.modules.characterSlot)
-local dataStore = require(game.ReplicatedStorage.DataStore2)
+local ridge = require(game.ReplicatedStorage.modules.ridge)
 module.teleportPlayer = function(player, placeId, extraTeleports)
     game.ReplicatedStorage:WaitForChild("events"):WaitForChild("teleportPlayer"):FireClient(player, placeId, extraTeleports)
 end
@@ -25,7 +25,7 @@ module.getCurrentPlace = function(player)
         warn("Failed to perform getLastPlace: Character slot is nil, assuming slot id is 1")
         currentSlot = 1
     end
-    local lastPlaceStore = dataStore("lastPlayerPlace"..currentSlot, player)
+    local lastPlaceStore = ridge.loadPlayerDatastore("lastPlayerPlace", player)
     return lastPlaceStore:Get(7207718284)
 end
 return module
