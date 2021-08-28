@@ -22,5 +22,12 @@ local backpack = icon.new()
 backpack:setImage(7230246878)
 backpack:setLabel("Backpack")
 backpack:bindEvent("selected", function ()
-	print("bob")
+	-- wait for the event to be created by backpackManager
+	game.ReplicatedStorage.events:WaitForChild("openUserBackpack"):Fire()
+end)
+backpack:bindEvent("deselected", function()
+	local backpackUi = game.Players.LocalPlayer.PlayerGui:FindFirstChild("backpackView")
+	if backpackUi ~= nil then
+		backpackUi:Destroy()
+	end
 end)
