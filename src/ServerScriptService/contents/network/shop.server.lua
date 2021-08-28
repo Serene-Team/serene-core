@@ -38,5 +38,4 @@ network.remotefunction("confirmPurchase", function (player, item, shopId, amount
 		tickCounter += 1
 	end
 	print("purchase confirmed!")
-	backpack.saveBackpack(player)
 end)
