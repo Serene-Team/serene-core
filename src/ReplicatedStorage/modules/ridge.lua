@@ -95,7 +95,7 @@ module.loadPlayerDatastore = function(name, player)
             [name] = dataStoreService:GetDataStore(name.."_"..player.UserId)
         }
     else
-        if shared["ridgeDatabase_"..player.UserId][name] ~= nil then
+        if shared["ridgeDatabase_"..player.UserId][name] == nil then
             shared["ridgeDatabase_"..player.UserId][name] = dataStoreService:GetDataStore(name.."_"..player.UserId)
         end
     end
