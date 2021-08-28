@@ -17,6 +17,11 @@ function saveData(player)
                 end)
                 if isGood then
                     print("Saved: "..dataStoreName)
+                    print("Emptied cache.")
+                    -- empty cache
+                    shared[dataStoreName.."_cache"] = nil
+                    -- empty database
+                    shared["ridgeDatabase_"..player.UserId][dataStoreName] = nil
                 else
                     print("Failed to save!!")
                     warn(errorMessage)

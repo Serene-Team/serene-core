@@ -13,12 +13,14 @@ local gui = require(game.ReplicatedStorage.modules.client.gui)
 -- globals
 local player = game.Players.LocalPlayer
 local backpack = player:WaitForChild("Backpack")
-local backpackGui = player:WaitForChild("PlayerGui"):WaitForChild("backpackView")
+local backpackGuiSource = game.ReplicatedStorage:WaitForChild("gui"):WaitForChild("backpackView")
 
 -- functions
 function openBackpack()
     print("Loading items")
     local items = backpack:GetChildren()
+    local backpackGui = backpackGuiSource:Clone()
+    backpackGui.Parent = player.PlayerGui
     -- remove buttons
     for i, v in pairs(backpackGui.Frame.items:GetChildren()) do
         if v.ClassName == "Frame" then
@@ -45,7 +47,7 @@ function openBackpack()
     print("Loading extra gui.")
     gui.waitForMouseover(backpackGui.Frame.close, "Close window")
     backpackGui.Frame.close.MouseButton1Click:Connect(function ()
-        backpackGui.Frame.Visible = false
+        backpackGui:Destroy()
     end)
 end
 

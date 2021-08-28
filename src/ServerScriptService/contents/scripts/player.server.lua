@@ -7,11 +7,12 @@ playersService.PlayerAdded:Connect(function(player)
     print(player.DisplayName.." joined the game, awaiting player load.")
     player.CharacterAdded:Connect(function()
 		print(player.DisplayName.." character loaded!")
-		backpack.saveBackpack(player)
-		if game.PlaceId ~= 7193001633 then
-			teleportServer.saveCurrentPlace(player)
-		end
+		backpack.loadBackpack(player)
+		backpack.autoSave(player)
+		-- load player info
+		levels.loadLevelData(player)
 	end)
-	-- load player info
-	levels.loadLevelData(player)
+	if game.PlaceId ~= 7193001633 then
+		teleportServer.saveCurrentPlace(player)
+	end
 end)

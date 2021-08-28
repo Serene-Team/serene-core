@@ -1,6 +1,7 @@
 local network = require(game.ReplicatedStorage.modules.network)
 local itemModule = require(game.ReplicatedStorage.modules.item)
 local currency = require(game.ReplicatedStorage.modules.currency)
+local backpack = require(game.ReplicatedStorage.modules.backpack)
 network.remotefunction("confirmPurchase", function (player, item, shopId, amount)
 	-- lookup item info
 	local itemInfo = itemModule.getInfo(item)
@@ -37,4 +38,5 @@ network.remotefunction("confirmPurchase", function (player, item, shopId, amount
 		tickCounter += 1
 	end
 	print("purchase confirmed!")
+	backpack.saveBackpack(player)
 end)

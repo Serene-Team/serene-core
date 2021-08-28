@@ -13,9 +13,14 @@ module.waitForMouseover = function (uiObject, text)
 	local connect
 	uiObject.MouseEnter:Connect(function ()
 		connect = mouse.Move:Connect(function ()
-			player.PlayerGui.gameUi.mouseOverText.Visible = true
-			player.PlayerGui.gameUi.mouseOverText.Position = UDim2.new(0, mouse.X + 15, 0, mouse.Y - 40)
-			player.PlayerGui.gameUi.mouseOverText.Text = text	
+			if uiObject.Parent ~= nil then
+				player.PlayerGui.gameUi.mouseOverText.Visible = true
+				player.PlayerGui.gameUi.mouseOverText.Position = UDim2.new(0, mouse.X + 15, 0, mouse.Y - 40)
+				player.PlayerGui.gameUi.mouseOverText.Text = text	
+			else
+				connect:Disconnect()
+				player.PlayerGui.gameUi.mouseOverText.Visible = false
+			end
 		end)
 	end)
 	uiObject.MouseLeave:Connect(function ()

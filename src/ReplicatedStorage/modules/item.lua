@@ -15,10 +15,9 @@ module.loadItem = function (item, location)
 	else
 		data = data.data
 		local assetId = data.loadId
-		local asset = insert:LoadAsset(assetId)
-		local assetName = asset:GetChildren()[1].Name
-		asset:GetChildren()[1].Parent = location
-		return location[assetName]
+		local assetItem = insert:LoadAsset(assetId):GetChildren()[1]
+		assetItem.Parent = location
+		return assetItem
 	end
 end
 -- dropItems: drops a list of items with a given drop rate at a part
