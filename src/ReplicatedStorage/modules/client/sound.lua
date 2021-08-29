@@ -6,7 +6,7 @@ A: Its better. If we play the music on the client, the music will start at the b
 local module = {}
 local soundService = game:GetService("SoundService")
 local sounds = {
-    ["Ashtown"] = 1837200619
+    ["Ashtown"] = 1842245588
 }
 module.playSong = function(place)
     if sounds[place] == nil then

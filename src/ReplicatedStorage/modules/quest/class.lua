@@ -75,7 +75,7 @@ function quest:completeQuest(player)
     end
     local questFullName = quests[questName]["fullName"]
     -- fire event before we delete the data
-    local questData = self.questData  
+    local questData = self.questData
     if questData["events"] ~= nil then
         if questData.events["playerCompletedQuest"] ~= nil then
             local dataReturn = questData.events.playerCompletedQuest(player)
@@ -85,6 +85,7 @@ function quest:completeQuest(player)
             end
         end
     end
+    addToQuestHist(self.modulePath.Name, player)
     quests[questName] = nil
     playerQuestStore:setAsync(quests)
     quest:displayQuestAlert(player, "Quest completed: "..questFullName, "success")
@@ -164,7 +165,6 @@ function quest:startQuest(player)
     playerQuestStore:setAsync(quests)
     -- trigger events
     if questData["events"] ~= nil then
-        addToQuestHist(self.modulePath.Name, player)
         if questData.events["playerStartedQuest"] ~= nil then
             local dataReturn = questData.events.playerStartedQuest(self.currentPlayer)
             if dataReturn["client"] ~= nil then

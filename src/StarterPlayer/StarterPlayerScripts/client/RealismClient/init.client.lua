@@ -443,6 +443,8 @@ function CharacterRealism:MountMaterialSounds(humanoid)
 			end
 			
 			running.SoundId = "rbxassetid://" .. soundId
+			running.RollOffMaxDistance = 100
+			running.Volume = 25
 		end
 		
 		local floorListener = humanoid:GetPropertyChangedSignal("FloorMaterial")
