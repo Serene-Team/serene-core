@@ -13,29 +13,40 @@ function checkTable(t1,t2)
     for i,v in next, t2 do if t1[i]~=v then return false end end
     return true
 end
-function removeFromQuestHist(questDataName, player)
-    local playerQuestHistStore = ridge.loadPlayerDatastore("playerQuestHist", player)
-    local completedQuests = playerQuestHistStore:getAsync()
-    if completedQuests == nil then
-        completedQuests = {}
+function getQuestProfile(player)
+    local playerDataStore = ridge.getPlayerDataStore(player)
+    local questProfile = playerDataStore:getAsync("questProfile")
+    if questProfile == nil then
+        questProfile = {}
     end
-    completedQuests[questDataName] = nil
-    playerQuestHistStore:setAsync(completedQuests)
+    return questProfile
+end
+function setQuestProfile(player, value)
+    local playerDataStore = ridge.getPlayerDataStore(player)
+    playerDataStore:setAsync("questProfile", value)
+end
+function removeFromQuestHist(questDataName, player)
+    local questProfile = getQuestProfile(player)
+    if questProfile["completedQuests"] == nil then
+        warn("Failed to remove from quest hist: quest hist is empty.")
+        return "Empty"
+    end
+    questProfile["completedQuests"][questDataName] = nil
+    setQuestProfile(player, questProfile)
 end
 function addToQuestHist(questDataName, player)
-    local playerQuestHistStore = ridge.loadPlayerDatastore("playerQuestHist", player)
-    local completedQuests = playerQuestHistStore:getAsync()
-    if completedQuests == nil then
-        completedQuests = {}
+    local questProfile = getQuestProfile(player)
+    if questProfile["completedQuests"] == nil then
+        questProfile["completedQuests"] = {}
     end
-    completedQuests[questDataName] = true
-    playerQuestHistStore:setAsync(completedQuests)
+    questProfile["completedQuests"][questDataName] = true
+    setQuestProfile(player, questProfile)
 end
 
 --updateQuestData: update datastore quest data
 function quest:updateQuestData(player, key, value)
-    local playerQuestStore = ridge.loadPlayerDatastore("playerCurrentQuests", player)
-    local quests = playerQuestStore:getAsync()
+    local questProfile = getQuestProfile(player)
+    local quests = questProfile["currentQuests"]
     -- pre-checks
     if quests == nil then
         warn("Failed to update quest data: no quests found in dataStore")
@@ -52,12 +63,12 @@ function quest:updateQuestData(player, key, value)
         warn("data in dataStore is nil, this will create a new value. its recommended to only update existing values")
     end
     quests[questName].questData[key] = value
-    playerQuestStore:setAsync(quests)
+    setQuestProfile(player, questProfile)
 end
 --completeQuest: completes the quest for a player if the questData matches the final quest data
 function quest:completeQuest(player)
-    local playerQuestStore = ridge.loadPlayerDatastore("playerCurrentQuests", player)
-    local quests = playerQuestStore:getAsync()
+    local questProfile = getQuestProfile(player)
+    local quests = questProfile["currentQuests"]
     local questName = self.modulePath.Name
     if quests == nil then
         quest:displayQuestAlert(player, "No quests in DataStore.", "danger")
@@ -86,15 +97,15 @@ function quest:completeQuest(player)
         end
     end
     addToQuestHist(self.modulePath.Name, player)
-    quests[questName] = nil
-    playerQuestStore:setAsync(quests)
+    questProfile["currentQuests"][questName] = nil
+    setQuestProfile(player, questProfile)
     quest:displayQuestAlert(player, "Quest completed: "..questFullName, "success")
 end
 --endQuest: force ends a quest and removes it from the dataStore
 function quest:endQuest(player)
     warn("force removing quest from datastore.")
-    local playerQuestStore = ridge.loadPlayerDatastore("playerCurrentQuests", player)
-    local quests = playerQuestStore:getAsync()
+    local questProfile = getQuestProfile(player)
+    local quests = questProfile["currentQuests"]
     if quests == nil then
         warn("Failed to remove quest: no quests in datastore")
         return "Failed"
@@ -105,16 +116,16 @@ function quest:endQuest(player)
         -- fire event before we delete the data
         if questData["events"] ~= nil then
             if questData.events["playerCompletedQuest"] ~= nil then
-                local dataReturn = questData.events.playerCompletedQuest(self.currentPlayer)
+                local dataReturn = questData.events.playerCompletedQuest(player)
                 if dataReturn["client"] ~= nil then
                     local clientEvent = dataReturn.client
                     clientEvent:FireClient(player)
                 end
             end
         end
-        quests[questDataName] = nil
+        questProfile["currentQuests"][questDataName] = nil
         removeFromQuestHist(self.modulePath.Name, player)
-        playerQuestStore:setAsync(quests)
+        setQuestProfile(player, questProfile)
         quest:displayQuestAlert(player, "Removed quest!", "success")
     else
         warn("Failed to remove quest: quest not in datastore")
@@ -152,17 +163,16 @@ function quest:startQuest(player)
     print("Starting quest")
     local questData = self.questData
     local questDataName = self.modulePath.Name
-    local playerQuestStore = ridge.loadPlayerDatastore("playerCurrentQuests", player)
-    local quests = playerQuestStore:getAsync()
-    if quests == nil then
-        quests = {}
+    local questProfile = getQuestProfile(player)
+    if questProfile["currentQuests"] == nil then
+        questProfile["currentQuests"] = {}
     end
-    quests[questDataName] = {
+    questProfile["currentQuests"][questDataName] = {
         fullName = questData.fullName,
         questData = questData.questData.starterData
     }
     -- save quest data
-    playerQuestStore:setAsync(quests)
+    setQuestProfile(player, questProfile)
     -- trigger events
     if questData["events"] ~= nil then
         if questData.events["playerStartedQuest"] ~= nil then
@@ -178,8 +188,8 @@ function quest:startQuest(player)
 end
 --getQuestData: returns the current quest data in the datastore for the given player
 function quest:getQuestData(player)
-    local playerQuestStore = ridge.loadPlayerDatastore("playerCurrentQuests", player)
-    local quests = playerQuestStore:getAsync()
+    local questProfile = getQuestProfile(player)
+    local quests = questProfile["currentQuests"]
     local questDataName = self.modulePath.Name
     if quests == nil then
         warn("Failed to lookup quest data: no quests found in dataStore")
@@ -193,8 +203,8 @@ function quest:getQuestData(player)
 end
 --isDoingQuest: returns if the player is doing the current quest or not
 function quest:isDoingQuest(player)
-    local playerQuestStore = ridge.loadPlayerDatastore("playerCurrentQuests", player)
-    local quests = playerQuestStore:getAsync()
+    local questProfile = getQuestProfile(player)
+    local quests = questProfile["currentQuests"]
     local questDataName = self.modulePath.Name
     if quests == nil then
         return false
@@ -206,9 +216,8 @@ function quest:isDoingQuest(player)
 end
 --hasDoneQuest: returns if the player has done the current quest or not
 function quest:hasDoneQuest(player)
-    local playerQuestHistStore = ridge.loadPlayerDatastore("playerQuestHist", player)
-    local questHist = playerQuestHistStore:getAsync()
-    print(questHist)
+    local questProfile = getQuestProfile(player)
+    local questHist = questProfile["completedQuests"]
     local questDataName = self.modulePath.Name
     if questHist == nil then
         return false

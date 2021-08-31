@@ -1,25 +1,26 @@
 local module = {}
 local ridge = require(game.ReplicatedStorage.modules.ridge)
 module.giveCoins = function(player, amount)
-    local coinStore = ridge.loadPlayerDatastore("playerCoinStore", player)
-    local currentCoins = coinStore:getAsync(0)
-    coinStore:setAsync(currentCoins + amount)
-    return currentCoins + amount
+    local playerDataStore = ridge.getPlayerDataStore(player)        
+    local currentCoins = playerDataStore:getAsync("currency")
+    if currentCoins == nil then
+        currentCoins = 1
+    end
+    playerDataStore:setAsync("currency", currentCoins + amount)
 end
 module.getCoins = function(player)
-    local coinStore =  ridge.loadPlayerDatastore("playerCoinStore", player)
-    local currentCoins = coinStore:getAsync()
-    print(currentCoins)
+    local playerDataStore = ridge.getPlayerDataStore(player)        
+    local currentCoins = playerDataStore:getAsync("currency")
     if currentCoins == nil then
         currentCoins = 0
     end
-    print(currentCoins)
     return currentCoins
 end
 module.takeCoins = function(player, amount)
-    local coinStore =  ridge.loadPlayerDatastore("playerCoinStore", player)
+    local playerDataStore = ridge.getPlayerDataStore(player)        
+    local coinStore = playerDataStore:getAsync("currency")
     local currentCoins = module.getCoins(player)
-    coinStore:setAsync(currentCoins - amount)
+    playerDataStore:setAsync("currency", currentCoins - amount)
     return currentCoins - amount
 end
 return module

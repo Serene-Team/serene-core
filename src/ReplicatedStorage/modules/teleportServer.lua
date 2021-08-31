@@ -10,15 +10,24 @@ module.teleportPlayer = function(player, placeId, extraTeleports)
     game.ReplicatedStorage:WaitForChild("events"):WaitForChild("teleportPlayer"):FireClient(player, placeId, extraTeleports)
 end
 module.saveCurrentPlace = function(player)
-    local lastPlaceStore = ridge.loadPlayerDatastore("lastPlayerPlace", player)
-    lastPlaceStore:setAsync(game.PlaceId)
+    local playerDataStore = ridge.getPlayerDataStore(player)
+    local characterInfo = playerDataStore:getAsync("characterInfo")
+    if characterInfo == nil then
+        characterInfo = {}
+    end
+    characterInfo["placeId"] = game.PlaceId
+    playerDataStore:setAsync("characterInfo", characterInfo)
 end
 module.getCurrentPlace = function(player)
-    local lastPlaceStore = ridge.loadPlayerDatastore("lastPlayerPlace", player)
-    local lastPlaceData = lastPlaceStore:getAsync()
-    if lastPlaceData == nil then
-        lastPlaceData = 7207718284
+    local playerDataStore = ridge.getPlayerDataStore(player)
+    local characterInfo = playerDataStore:getAsync("characterInfo")
+    if characterInfo == nil then
+        characterInfo = {}
     end
-    return lastPlaceData
+    if characterInfo["placeId"] == nil then
+        return 7207718284
+    else
+        return characterInfo["placeId"]
+    end
 end
 return module

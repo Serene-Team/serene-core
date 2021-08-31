@@ -18,8 +18,8 @@ module.autoSave = function(player)
 end
 
 module.loadBackpack = function(player)
-	local playerBackpackStore = ridge.loadPlayerDatastore("playerBackpack", player)
-	local playerBackpack = playerBackpackStore:getAsync()
+	local playerDataStore = ridge.getPlayerDataStore(player)
+	local playerBackpack = playerDataStore:getAsync("backpack")
 	if playerBackpack == nil then
 		warn("no items in backpack: will not load")
 		return "NoItems"
@@ -42,6 +42,10 @@ module.saveBackpack = function(player)
 	local backpackItems = player.Backpack:GetChildren()
 	local dataStore = {}
 	for i, item in pairs(backpackItems) do
+		if i == 150 then 
+			warn("item limit reached.")
+			break
+		end
 		if item:GetAttribute("asset_name") == nil then
 			warn("Will not save item "..item.Name.." if it does not have a asset_name")
 		else
@@ -61,7 +65,8 @@ module.saveBackpack = function(player)
 		})
 	end
 	-- save to the datastore
-	local playerBackpack = ridge.loadPlayerDatastore("playerBackpack", player)
-	playerBackpack:setAsync(dataStore)
+	local playerDataStore = ridge.getPlayerDataStore(player)
+	playerDataStore:setAsync("backpack", dataStore)
+	print("saved backpack!")
 end
 return module

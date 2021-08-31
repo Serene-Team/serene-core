@@ -12,8 +12,8 @@ local levelsMath = mathLibrary.import("level")
 --5736400107
 -- core functions
 function getLevelData(player)
-    local playerLevelDataStore = ridge.loadPlayerDatastore("playerLevelData", player)        
-    local playerLevelData = playerLevelDataStore:getAsync()
+    local playerDataStore = ridge.getPlayerDataStore(player)        
+    local playerLevelData = playerDataStore:getAsync("levels")
     if playerLevelData == nil then
         return {
             currentLevel = 1,
@@ -24,8 +24,8 @@ function getLevelData(player)
     end
 end
 function setLevelData(player, value)
-    local playerLevelDataStore = ridge.loadPlayerDatastore("playerLevelData", player)        
-    playerLevelDataStore:setAsync(value)
+    local playerDataStore = ridge.getPlayerDataStore(player)        
+    playerDataStore:setAsync("levels", value)
 end
 function playLevelUpSound(player)
     game.ReplicatedStorage.events:WaitForChild("playLocalSound"):FireClient(player, 5736400107)

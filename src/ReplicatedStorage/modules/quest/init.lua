@@ -7,6 +7,20 @@
 local module = {}
 local class = require(script.class)
 local ridge = require(game.ReplicatedStorage.modules.ridge)
+
+function getQuestProfile(player)
+    local playerDataStore = ridge.getPlayerDataStore(player)
+    local questProfile = playerDataStore:getAsync("questProfile")
+    if questProfile == nil then
+        questProfile = {}
+    end
+    return questProfile
+end
+function setQuestProfile(player, value)
+    local playerDataStore = ridge.getPlayerDataStore(player)
+    playerDataStore:setAsync("questProfile", value)
+end
+
 --importFromModule: import a quest from a module script
 module.importFromModule = function(path)
     if not path:IsA("ModuleScript") then
@@ -22,8 +36,8 @@ module.importFromModule = function(path)
 end
 --loadQuestData: execute events when the player joins the game for quests
 module.loadQuestData = function(player)
-    local playerQuestStore = ridge.loadPlayerDatastore("playerCurrentQuests", player)
-    local quests = playerQuestStore:getAsync()
+    local questProfile = getQuestProfile(player)
+    local quests = questProfile["currentQuests"]
     if quests == nil then
         print("nothing to update, player is not doing any quests.")
     else

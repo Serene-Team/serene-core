@@ -1,105 +1,85 @@
 --[[
-    File name: ridge.lua
-    Description: datastore module for serene
+    File name: init.lua
+    Description: main module code for ridge
     Author: oldmilk
 --]]
 
 local module = {}
--- services
 local dataStoreService = game:GetService("DataStoreService")
+-- class declaration
+local class = {}
+class.__index = class
+class.dataStoreName = nil
+class.player = nil
 
+-- services
 
 -- core functions
+function getPlayerProfile(player)
+    return dataStoreService:GetDataStore("profile_"..player.UserId)
+end
+function createCache(player)
+    shared["ridgeProfile_"..player.UserId] = {
 
---setValueCache: sets a value in the cache
-function setValueCache(key, value)
-    shared[key] = value
+    }
 end
---getValueCache: gets a value from the cache
-function getValueCache(key)
-    return shared[key]
-end
---forceUpdateCache: called if the cache for a value is nil, this function sets the cache value to the current DataStore version
-function forceUpdateCache(key, dataStore)
-   -- get the latest data
-   local currentData = nil
-   local good, errorMessage = pcall(function()
-       currentData = dataStore:GetAsync("MainValue")
-   end)
-   if good then
-    -- update the cache
-    setValueCache(key, currentData)
-    print("Updated cache with force update.")
-    return currentData
-   else
-        warn("Failed to force update cache: "..errorMessage)
-        return "CacheUpdateFailed"
-   end
-end
-
--- class
-local ridgeClass = {}
-ridgeClass.__index = ridgeClass
-ridgeClass.dataStore = nil
-ridgeClass.isGlobal = false
-ridgeClass.dataStoreName = nil
---setAsync: update the cache value
-function ridgeClass:setAsync(value)
-    -- update cache
-    local keyName = self.dataStoreName.."_cache"
-    setValueCache(keyName, value)
-end
---getAsync: return the current value from cache, if the cache is empty the cache is updated to the latest DataStore version
-function ridgeClass:getAsync()
-    local cacheKey = self.dataStoreName.."_cache"
-    local keyData = getValueCache(cacheKey)
-    if keyData == nil then
-        print("cache empty, force updating.")
-        local data = forceUpdateCache(cacheKey, self.dataStore)
-        return data
-    else
-        return getValueCache(cacheKey)
-    end
-end
---save: force save the cache into the datastore
-function ridgeClass:save()
-    print("Flushing cache into datastore.")
-    local keyName = self.dataStoreName.."_cache"
-    local cacheData = getValueCache(keyName)
-    if cacheData == nil then
-        warn("Failed to save: cache is empty")
-        return "CacheEmpty"
-    else
-        local good, errorMessage = pcall(function()
-            self.dataStore:SetAsync("MainValue", cacheData)
-        end)
-        if good then
-            print("Data saved!")
-        else
-            print("Failed to save data!")
-            error(errorMessage)
+function forceUpdateCache(player)
+    print("Updating cache.")
+    local profile = getPlayerProfile(player)
+    local data = nil
+    local good, errorMessage = pcall(function()
+        data = profile:GetAsync("profileData")
+    end)
+    if good then
+        if data == nil then
+            data = {}
         end
+        shared["ridgeProfile_"..player.UserId] = data
+    else
+        print("Failed to update cache:")
+        error(errorMessage)
     end
 end
+function setValueCache(key, value, player)
+    if not cacheExists(player) then
+        forceUpdateCache(player)
+    end
+    shared["ridgeProfile_"..player.UserId][key] = value
+end
+function cacheExists(player)
+    if shared["ridgeProfile_"..player.UserId] == nil then
+        return false
+    else
+        return true
+    end
+end
+
+--setAsync: update the cache with a new value
+function class:setAsync(key, value)
+    setValueCache(key, value, self.player)
+end
+--getAsync: get a value from the cache/datastore
+function class:getAsync(key)
+    local player = self.player
+    if shared["ridgeProfile_"..player.UserId] == nil then
+        forceUpdateCache(player)
+    end
+    return shared["ridgeProfile_"..player.UserId][key]
+end
+
 
 -- module functions
-module.loadPlayerDatastore = function(name, player)
+module.getPlayerDataStore = function(player)
     local coreData = {
-        dataStoreName = name,
-        dataStore = dataStoreService:GetDataStore(name.."_"..player.UserId),
-        isGlobal = false
+        player = player
     }
-    setmetatable(coreData, ridgeClass)
-    if shared["ridgeDatabase_"..player.UserId] == nil then
-        shared["ridgeDatabase_"..player.UserId] = {
-            [name] = dataStoreService:GetDataStore(name.."_"..player.UserId)
-        }
-    else
-        if shared["ridgeDatabase_"..player.UserId][name] == nil then
-            shared["ridgeDatabase_"..player.UserId][name] = dataStoreService:GetDataStore(name.."_"..player.UserId)
-        end
-    end
+    setmetatable(coreData, class)
     return coreData
 end
-
+module.playerAdded = function(player)
+    print(player.Name.." added to game. updating cache")
+    -- take the info from the dataStore and put into cache for use
+    -- when the player leaves the data from the cache is flushed into the dataStore
+    forceUpdateCache(player)
+end
 return module
