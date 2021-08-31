@@ -15,6 +15,10 @@ module.saveCurrentPlace = function(player)
 end
 module.getCurrentPlace = function(player)
     local lastPlaceStore = ridge.loadPlayerDatastore("lastPlayerPlace", player)
-    return lastPlaceStore:getAsync()
+    local lastPlaceData = lastPlaceStore:getAsync()
+    if lastPlaceData == nil then
+        lastPlaceData = 7207718284
+    end
+    return lastPlaceData
 end
 return module
