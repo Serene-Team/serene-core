@@ -106,27 +106,6 @@ function monsterClass:pathfindToPosition(fromPos, toPos, enableDynamic)
 		humanoid:MoveTo(waypoint.Position)
 	end
 end
--- getValue: get a value in the monster config
-function monsterClass:getValue(key)
-	local root = self.root
-	local config = nil
-	if root.Parent:FindFirstChildOfClass("Configuration") == nil then
-		error("Failed to read value: config not found in model")
-	else
-		config = root.Parent:FindFirstChildOfClass("Configuration")
-		if config.Name ~= "EnemyConfig" then
-			warn("Default config name should be EnemyConfig")
-		end
-	end
-	-- get value
-	local value = nil
-	if config:FindFirstChild(key) == nil then
-		warn("Failed to read value: key not found in config")
-		return "NoValue"
-	else
-		return config:FindFirstChild(key).Value
-	end
-end
 -- onTouch: listen for when the player touches the enemy
 function monsterClass:onTouch(renderMesh, callback) 
 	renderMesh.Touched:Connect(function (hit)
@@ -137,6 +116,37 @@ function monsterClass:onTouch(renderMesh, callback)
 		end
 	end)
 	
+end
+--playAnimation: player an animation for the current mob
+function monsterClass:playAnimation(animationId)
+	local animator = nil
+	local enemyRoot = self.root
+	local humanoid = enemyRoot.Parent:FindFirstChildOfClass("Humanoid")
+	if humanoid == nil then
+		error("Failed to play animation: humanoid is nil")
+	end
+	if humanoid:FindFirstChildOfClass("Animator") == nil then
+		animator = Instance.new("Animator")	
+		animator.Parent = humanoid
+	else
+		animator = humanoid:FindFirstChildOfClass("Animator")
+	end
+	local animation = Instance.new("Animation")
+	animation.AnimationId = "rbxassetid://"..animationId
+	local track = animator:LoadAnimation(animation)
+	track:Play()
+	return track
+end
+--onWalk: listen for when the mob starts walking
+function monsterClass:onWalk(callback)
+	local enemyRoot = self.root
+	local humanoid = enemyRoot.Parent:FindFirstChildOfClass("Humanoid")
+	if humanoid == nil then
+		error("Failed to connect to event: humanoid is nil")
+	end
+	humanoid.Running:Connect(function(speed)
+		callback(speed)
+	end)
 end
 
 -- register: return a new monsterClass
