@@ -11,23 +11,17 @@ module.teleportPlayer = function(player, placeId, extraTeleports)
 end
 module.saveCurrentPlace = function(player)
     local playerDataStore = ridge.getPlayerDataStore(player)
-    local characterInfo = playerDataStore:getAsync("characterInfo")
-    if characterInfo == nil then
-        characterInfo = {}
-    end
-    characterInfo["placeId"] = game.PlaceId
-    playerDataStore:setAsync("characterInfo", characterInfo)
+    local placeId = playerDataStore:getAsync("placeId")
+    placeId = game.PlaceId
+    playerDataStore:setAsync("placeId", placeId)
+    print("saved current place id.")
 end
 module.getCurrentPlace = function(player)
     local playerDataStore = ridge.getPlayerDataStore(player)
-    local characterInfo = playerDataStore:getAsync("characterInfo")
-    if characterInfo == nil then
-        characterInfo = {}
+    local placeId = playerDataStore:getAsync("placeId")
+    if placeId == nil then
+        placeId = 7207718284
     end
-    if characterInfo["placeId"] == nil then
-        return 7207718284
-    else
-        return characterInfo["placeId"]
-    end
+    return placeId
 end
 return module

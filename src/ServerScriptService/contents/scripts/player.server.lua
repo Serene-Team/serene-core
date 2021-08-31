@@ -1,4 +1,4 @@
-local playersService = game.Players
+local playersService = game:GetService("Players")
 local playerList = require(game.ReplicatedStorage.modules.playerlist)
 local backpack = require(game.ReplicatedStorage.modules.backpack)
 local levels = require(game.ReplicatedStorage.modules.levels)
