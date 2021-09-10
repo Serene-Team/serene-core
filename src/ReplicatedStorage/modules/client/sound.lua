@@ -7,7 +7,11 @@ local module = {}
 local soundService = game:GetService("SoundService")
 local sounds = {
     ["Ashtown"] = 1842245588,
-    ["Hidden Valley"] = 7107135525
+	["Hidden Valley"] = 7107135525,
+	["Build Env"] = 1841226234
+}
+local soundEffects = {
+    ["getCoins"] = 607665037
 }
 module.playSong = function(place)
     if sounds[place] == nil then
@@ -27,6 +31,13 @@ module.playLocalSound = function(soundId)
     local soundItem = Instance.new("Sound")
     soundItem.SoundId = "rbxassetid://"..soundId
     soundService:PlayLocalSound(soundItem)
+end
+module.playSoundEffect = function(soundEffectType)
+    if soundEffects[soundEffectType] == nil then
+        error("Failed to play sound effect: "..soundEffectType.." is not a valid member of table soundEffects")
+    else
+        module.playLocalSound(soundEffects[soundEffectType])
+    end
 end
 
 module.enableFootsteps = function(player)

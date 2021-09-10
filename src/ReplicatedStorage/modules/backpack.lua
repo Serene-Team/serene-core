@@ -4,69 +4,87 @@
     Author: oldmilk
 --]]
 local module = {}
-local ridge = require(game.ReplicatedStorage.modules.ridge)
-local itemLoader = require(game.ReplicatedStorage.modules.item)
-
-module.autoSave = function(player)
-	local backpack = player:WaitForChild("Backpack")
-	backpack.ChildAdded:Connect(function(child)
-		module.saveBackpack(player)
-	end)
-	backpack.ChildRemoved:Connect(function(child)
-		module.saveBackpack(player)
-	end)
-end
-
-module.loadBackpack = function(player)
-	local playerDataStore = ridge.getPlayerDataStore(player)
-	local playerBackpack = playerDataStore:getAsync("backpack")
-	if playerBackpack == nil then
-		warn("no items in backpack: will not load")
-		return "NoItems"
-	end
-	local backpack = player:WaitForChild("Backpack")
-	for i, item in pairs(playerBackpack) do
-		if item.assetName ~= nil then
-			local itemAsset = itemLoader.loadItem(item.assetName, backpack)
-			itemAsset.Name = item.name
-			if item["attributes"] ~= nil then
-				print("adding attributes")
-				for key, value in pairs(item["attributes"]) do
-					itemAsset:SetAttribute(key, value)
-				end
-			end
+local ridge = require(game.ReplicatedStorage:WaitForChild("modules").ridge)
+local extra = require(game.ReplicatedStorage:WaitForChild("modules").extra)
+local itemLoader = require(game.ReplicatedStorage:WaitForChild("modules").item)
+local ServerStorage = game.ServerStorage
+module.loadBackpack = function (player)
+	local backpackFolder = ServerStorage:FindFirstChild("backpackSave_"..player.Name)
+	if player:GetAttribute("hasLoadedBackpack") == nil then
+		local playerProfile = ridge.getPlayerDataStore(player)
+		local backpack = playerProfile:getAsync("backpack")
+		if backpackFolder == nil then
+			backpackFolder = Instance.new("Folder")
+			backpackFolder.Parent = ServerStorage
+			backpackFolder.Name = "backpackSave_"..player.Name
+		end
+		player:SetAttribute("hasLoadedBackpack", true)
+		if backpack == nil then
+			backpack = {}
+		end
+		for _, item in pairs(backpack) do
+			local itemName = item.assetName
+			-- local attrs = item.attributes
+			itemLoader.loadItem(itemName, backpackFolder)
 		end
 	end
+	-- if we have already loaded in the backpack data just clone everything into the players backpack
+	for _, tool in pairs(backpackFolder:GetChildren()) do
+		tool:Clone().Parent = player.Backpack
+	end
 end
-module.saveBackpack = function(player)
-	local backpackItems = player.Backpack:GetChildren()
+module.saveBackpack = function (player: Player)
+	player:SetAttribute("systemPreventAutosave", true)
+	local playerProfile = ridge.getPlayerDataStore(player)
+	local backpackFolder = ServerStorage:FindFirstChild("backpackSave_"..player.Name)
+	if backpackFolder == nil then
+		warn("Not saving: backpack save file empty.")
+		return
+	end
 	local dataStore = {}
-	for i, item in pairs(backpackItems) do
-		if i == 150 then 
-			warn("item limit reached.")
-			break
-		end
-		if item:GetAttribute("asset_name") == nil then
-			warn("Will not save item "..item.Name.." if it does not have a asset_name")
-		else
-			table.insert(dataStore, {
-				assetName = item:GetAttribute("asset_name"),
-				name = item.Name,
-				attributes = item:GetAttributes()
-			})
-		end
-	end
-	if player.Character:FindFirstChildOfClass("Tool") then
-		local tool = player.Character:FindFirstChildOfClass("Tool")
+	for _, tool in pairs(backpackFolder:GetChildren()) do
+		local assetName = tool:GetAttribute("asset_name")
 		table.insert(dataStore, {
-			assetName = tool:GetAttribute("asset_name"),
-			name = tool.Name,
+			assetName = assetName,
 			attributes = tool:GetAttributes()
 		})
 	end
-	-- save to the datastore
-	local playerDataStore = ridge.getPlayerDataStore(player)
-	playerDataStore:setAsync("backpack", dataStore)
-	print("saved backpack!")
+	-- remove the backpack save file on the server.
+	backpackFolder:Destroy()
+	playerProfile:setAsync("backpack", dataStore)
+	print("saved backpack for player: "..player.Name)	
+end
+module.autoSave = function(player: Player)
+	if player:GetAttribute("backpackAutoSavedEnabled") == nil then
+		player:SetAttribute("backpackAutoSavedEnabled", true)
+		player:WaitForChild("Backpack").ChildAdded:Connect(function(tool)
+			if player:GetAttribute("systemPreventAutosave") == nil then
+				local backpackFolder = ServerStorage:WaitForChild("backpackSave_"..player.Name)
+				if player:FindFirstChild("Backpack") == nil then
+					warn("Failed to find backpack")
+				else
+					extra.sendItemAlert(player, tool:GetAttribute("asset_name"))
+					tool:Clone().Parent = backpackFolder
+				end
+			end
+		end)
+		player:WaitForChild("Backpack").ChildRemoved:Connect(function(tool)
+			if player:GetAttribute("systemPreventAutosave") == nil then
+				local backpackFolder = ServerStorage:WaitForChild("backpackSave_"..player.Name)
+				if player:FindFirstChild("Backpack") == nil then
+					warn("Failed to find backpack")
+				else
+					backpackFolder:ClearAllChildren()
+					local equippedTool = player.Character:FindFirstChildOfClass("Tool")
+					if equippedTool ~= nil then
+						equippedTool:Clone().Parent = backpackFolder
+					end
+					for _, tool in pairs(player:WaitForChild("Backpack"):GetChildren()) do
+						tool:Clone().Parent = backpackFolder
+					end
+				end
+			end
+		end)
+	end
 end
 return module

@@ -1,5 +1,5 @@
-local network = require(game.ReplicatedStorage.modules.network)
-local teleportServer = require(game.ReplicatedStorage.modules.teleportServer)
+local network = require(game.ReplicatedStorage:WaitForChild("modules").network)
+local teleportServer = require(game.ReplicatedStorage:WaitForChild("modules").teleportServer)
 network.event("loadCharacterSlot", function(player, characterSlotId)
     print("Load: character data")
     local lastPlace = teleportServer.getCurrentPlace(player)

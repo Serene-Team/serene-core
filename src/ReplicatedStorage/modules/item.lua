@@ -1,21 +1,19 @@
 local module = {}	
-local http = game:GetService("HttpService")
-local insert = game:GetService("InsertService")
-local sereneMath = require(game.ReplicatedStorage.modules.math)
+local InsertService = game:GetService("InsertService")
+local sereneMath = require(game.ReplicatedStorage:WaitForChild("modules").math)
 local monster = sereneMath.import("monster")
+local gameDatabase = require(game.ReplicatedStorage:WaitForChild("modules").gameDatabase)
 module.getInfo = function (item)
-	local rawData = http:GetAsync("http://serene-api.herokuapp.com/item/"..item)
-	local info = http:JSONDecode(rawData)
-	return info
+	local itemInfo = gameDatabase.getItemInfo(item)
+	return itemInfo
 end
 module.loadItem = function (item, location)
 	local data = module.getInfo(item)
 	if data.error then
 		error("Failed to load item: "..data.type)
 	else
-		data = data.data
 		local assetId = data.loadId
-		local assetItem = insert:LoadAsset(assetId):GetChildren()[1]
+		local assetItem = InsertService:LoadAsset(assetId):GetChildren()[1]
 		assetItem.Parent = location
 		return assetItem
 	end
@@ -34,8 +32,7 @@ module.dropItems = function(items, players)
 		local canDropItem = monster.calculateDropRate(item.drop_chance)
 		if canDropItem then
 			local player = players[math.random(#players)]
-			print("dropped: "..index.." into "..player.Name.."'s backpack")
-			local itemAsset = module.loadItem(index, player.Backpack)
+			module.loadItem(index, player.Backpack)	
 		end
 	end
 end

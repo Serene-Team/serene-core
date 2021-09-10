@@ -6,10 +6,10 @@
 
 -- import services
 local pathfindingService = game:GetService("PathfindingService")
-local insertService = game:GetService("InsertService")
-local httpService = game:GetService("HttpService")
-local item = require(game.ReplicatedStorage.modules.item)
-local levels = require(game.ReplicatedStorage.modules.levels)
+local tweenService = game:GetService("TweenService")
+local HttpService = game:GetService("HttpService")
+local item = require(game.ReplicatedStorage:WaitForChild("modules").item)
+local levels = require(game.ReplicatedStorage:WaitForChild("modules").levels)
 -- init module
 local module = {}
 local monsterClass = {}
@@ -75,7 +75,7 @@ function monsterClass:setReward(loot_table)
 	end)
 end
 -- pathfindToPosition: pathfind to a 3D position in the world
-function monsterClass:pathfindToPosition(fromPos, toPos, enableDynamic)
+function monsterClass:pathfindToPosition(fromPos, toPos)
 	local root = self.root
 	-- prevent @oldmilk from being stupid when making stuff
 	if fromPos == nil or toPos == nil then
@@ -148,39 +148,40 @@ function monsterClass:onWalk(callback)
 		callback(speed)
 	end)
 end
-
+-- onAttackTick: listen for the attack tick event
+function monsterClass:onAttackTick(callback)
+	-- TODO: Get it working
+end
 -- register: return a new monsterClass
 module.register = function(root)
 	local self = {
 		root = root
 	}
 	setmetatable(self, monsterClass)
-	return self
-end
--- https://devforum.roblox.com/t/how-can-i-get-a-random-position-located-through-the-size-of-the-part/253540/6
-function getRandomInPart(part)
-	local random = Random.new()
-	local randomCFrame = part.CFrame * CFrame.new(random:NextNumber(-part.Size.X/2,part.Size.X/2), random:NextNumber(-part.Size.Y/2,part.Size.Y/2), random:NextNumber(-part.Size.Z/2,part.Size.Z/2))
-	return randomCFrame
-end
--- spawnEntity: spawns a new instance of a monster
-module.spawnEntity = function (spawnPlace, entityId)
-	--7214764565
-	if game.Workspace.spawnStorage:FindFirstChild(entityId) == nil then
-		local inst = Instance.new("Folder")
-		inst.Name = tostring(entityId)
-		inst.Parent = game.Workspace.spawnStorage
+	-- setup basic stuff
+	local baseHealthBar = game.ReplicatedStorage:WaitForChild("gui"):WaitForChild("healthBarRoot")
+	local healthBar = baseHealthBar:Clone()
+	healthBar.Parent = root
+	-- setup
+	local humanoid = root.Parent:FindFirstChildOfClass("Humanoid")
+	if humanoid == nil then
+		error("Failed to setup: monster must have a valid humanoid")
+	else
+		humanoid.HealthDisplayType = Enum.HumanoidHealthDisplayType.AlwaysOff
+		healthBar.healthTxt.Text = "Health: "..math.round(humanoid.Health).."/"..humanoid.MaxHealth
+		humanoid.HealthChanged:Connect(function()
+			local health = humanoid.Health/humanoid.MaxHealth
+			local info = TweenInfo.new(humanoid.Health / humanoid.MaxHealth) --Tween Info
+			healthBar.healthTxt.Text = "Health: "..math.round(humanoid.Health).."/"..humanoid.MaxHealth
+			tweenService:Create(healthBar.Frame.health,info,{Size = UDim2.new(health, 0, 0, 100)}):Play() -- Create The Tween Then Play It
+		end)
 	end
-	local mob = insertService:LoadAsset(tonumber(entityId))
-	mob.Parent = game.Workspace.spawnStorage[entityId]
-	-- calc position to spawn
-	local pos = getRandomInPart(spawnPlace)
-	mob:MoveTo(pos.Position)
+	return self
 end
 -- getLootInfo: returns the loot info for a monster from the REST api
 function module.getLootInfo(monster)
-	local rawData = httpService:GetAsync("http://serene-api.herokuapp.com/loot_table/"..monster)
-	local info = httpService:JSONDecode(rawData)
+	local rawData = HttpService:GetAsync("http://serene-api.herokuapp.com/loot_table/"..monster)
+	local info = HttpService:JSONDecode(rawData)
 	return info
 end
 

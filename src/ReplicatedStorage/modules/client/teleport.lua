@@ -8,11 +8,14 @@ if runService:IsServer() then
 end
 local placeDesc = {
     ["Serene"] = "Ah yes! The main menu!",
-    ["Ashtown"] = "A great place to start!"
+	["Ashtown"] = "A great place to start!",
+	["Hidden Valley"] = "A lost and forgotten valley.",
+    ["Build Env"] = "Into the realm of unstable code!!!"
 }
 local placeIcons = {
     ["Serene"] = "rbxassetid://7193700987",
-    ["Ashtown"] = "rbxassetid://7360092928"
+    ["Ashtown"] = "rbxassetid://7360092928",
+    ["Build Env"] = "rbxassetid://7435398715"
 }
 
 
@@ -31,7 +34,8 @@ teleport.teleportAsync = function(placeId, extraTeleportOptions)
         error("Failed to load teleport info.")
     end
     print("updating teleportUi")
-    teleportUi.Frame.title.Text = teleportInfo.Name
+	teleportUi.Frame.title.Text = teleportInfo.Name
+	print(teleportInfo.Name)
     if placeDesc[teleportInfo.Name] ~= nil then
         teleportUi.Frame.desc.Text = placeDesc[teleportInfo.Name]
     else

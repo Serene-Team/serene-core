@@ -3,6 +3,7 @@
     Description: auto save data when the player leaves the game. DO NOT move this into the main ridge module
     Author: oldmilk
 --]]
+-- NOTE: I also stuck the backpack saving code in here.
 local dataStoreService = game:GetService("DataStoreService")
 function getPlayerProfile(player)
     return dataStoreService:GetDataStore("profile_"..player.UserId)
@@ -31,13 +32,22 @@ function saveData(player)
         error(errorMessage)
     end
 end
-local ridge = require(game.ReplicatedStorage.modules.ridge)
+local ridge = require(game.ReplicatedStorage:WaitForChild("modules").ridge)
+local backpack = require(game.ReplicatedStorage:WaitForChild("modules").backpack)
 game.Players.ChildRemoved:Connect(function(player)
-    saveData(player)
+	if player:GetAttribute("taken") == nil then
+		player:SetAttribute("taken", true)
+		backpack.saveBackpack(player, false)
+		saveData(player)	
+	end
 end)
 game:BindToClose(function()
     print("Server closing, saving data.")
-    for i, player in pairs(game.Players:GetChildren()) do
-        saveData(player)
+	for i, player in pairs(game.Players:GetChildren()) do
+		if player:GetAttribute("taken") == nil then
+			player:SetAttribute("taken", true)
+			backpack.saveBackpack(player)
+			saveData(player)
+		end
     end
 end)

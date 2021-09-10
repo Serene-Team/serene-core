@@ -5,11 +5,11 @@
 --]]
 
 local module = {}
-local gui = require(game.ReplicatedStorage.modules.client.gui)
+local gui = require(game.ReplicatedStorage:WaitForChild("modules").client.gui)
 -- xpToLevelUp: compute how much exp the player needs to level up
 module.xpToLevelUp = function(currentLevel)
     -- thanks devfourm
-    return math.round(100*(2.45^currentLevel))
+    return 7 + 100*(currentLevel - 2) + 600*(currentLevel - 2)^2
 end
 -- xpToLevels: convert the given xp into levels
 module.xpToLevels = function(xp, currentLevel)

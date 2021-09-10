@@ -1,5 +1,5 @@
-local coins = require(game.ReplicatedStorage.modules.currency)
-local level = require(game.ReplicatedStorage.modules.levels)
+local coins = require(game.ReplicatedStorage:WaitForChild("modules").currency)
+local level = require(game.ReplicatedStorage:WaitForChild("modules").levels)
 local quest = {
     levelReq = 1,
     -- used in the quest log, and alerts

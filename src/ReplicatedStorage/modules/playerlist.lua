@@ -1,5 +1,5 @@
 local module = {}
-local currency = require(game.ReplicatedStorage.modules.currency)
+local currency = require(game.ReplicatedStorage:WaitForChild("modules").currency)
 -- updatePlayerInfo: Update player info on the playerlist
 module.updatePlayerInfo = function(player, key, value)
     

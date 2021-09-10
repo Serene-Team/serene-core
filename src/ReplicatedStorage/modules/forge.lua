@@ -13,6 +13,7 @@ local forgeDefaults = {
         max = 30
     }
 }
+local playerStats = require(game.ReplicatedStorage:WaitForChild("modules").playerStat)
 -- core functions
 
 -- loadAnimation: loads an animation onto the players humanoid, and returns the animation track
@@ -80,18 +81,27 @@ function forgeClass:swing()
     if tool:FindFirstChild("Handle") == nil then
         error("The weapon must have a handle, for items please use pine.")
     end
-    -- play animations
+	-- play animations
+	if tool:GetAttribute("coolDownEnabled") == nil then
+		tool:SetAttribute("coolDownEnabled", true)
+	else
+		return
+	end
     if animations ~= nil then 
         local track = loadAnimation(player, animations[forge.enums.animationTypes.ItemUse])
         track:Play()
-    end
-    -- do da math
-    local maxDamage = damageConfig.max
-    local minDamage = damageConfig.min
+	end
+	local currentStats = playerStats.getStatPoints(player)
+	local strPoints = currentStats.str
+	local damagePerPoint = 6
+	local damageAdd = strPoints * damagePerPoint
+	-- do da math
+	local maxDamage = damageConfig.max + damageAdd
+	local minDamage = damageConfig.min + damageAdd
     -- check if server pvp is enabled.
     local serverPvpEnabled = game.ServerStorage:FindFirstChild("pvpEnabled")
     -- calculate the damage in the range of maxDamage, and minDamage
-    local damageCalc = math.random(minDamage, maxDamage)
+	local damageCalc = math.random(minDamage, maxDamage)
     local toolConnect = tool.Handle.Touched:Connect(function (hit)
         -- check if the thing we hit has a humanoid
         if hit.Parent:FindFirstChildOfClass("Humanoid") ~= nil then
@@ -103,25 +113,27 @@ function forgeClass:swing()
                 else
                     warn("global pvp is disabled, to enable it create a item inside of ServerStorage named 'pvpEnabled'")
                 end
-            else
-                local killers = hit.Parent:FindFirstChild("killers")
-                if killers == nil then
-                    killers = Instance.new("Folder")
-                    killers.Name = "killers"
-                    killers.Parent = hit.Parent
-                end
-                if killers:FindFirstChild(player.Name) == nil then
-                    local killerTag = Instance.new("StringValue")
-                    killerTag.Name = player.Name
-                    killerTag.Value = player.Name
-                    killerTag.Parent = killers
-                end
-                hit.Parent.Humanoid:TakeDamage(damageCalc)
+			else
+				tool:SetAttribute("coolDownEnabled", true)
+				local killers = hit.Parent:FindFirstChild("killers")
+				if killers == nil then
+					killers = Instance.new("Folder")
+					killers.Name = "killers"
+					killers.Parent = hit.Parent
+				end
+				if killers:FindFirstChild(player.Name) == nil then
+					local killerTag = Instance.new("StringValue")
+					killerTag.Name = player.Name
+					killerTag.Value = player.Name
+					killerTag.Parent = killers
+				end
+				hit.Parent.Humanoid:TakeDamage(damageCalc)
             end
         end
-    end)
+	end)
+	task.wait(0.1)
     -- give some time for the player to hit the target
-    wait(1)
+	tool:SetAttribute("coolDownEnabled", nil)
     -- remove the event from memory
     toolConnect:Disconnect()
 end

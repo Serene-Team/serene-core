@@ -5,7 +5,7 @@
 --]]
 
 local module = {}
-local ridge = require(game.ReplicatedStorage.modules.ridge)
+local ridge = require(game.ReplicatedStorage:WaitForChild("modules").ridge)
 module.teleportPlayer = function(player, placeId, extraTeleports)
     game.ReplicatedStorage:WaitForChild("events"):WaitForChild("teleportPlayer"):FireClient(player, placeId, extraTeleports)
 end

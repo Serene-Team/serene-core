@@ -5,6 +5,9 @@ end
 if game.PlaceId == 7335918643 then
 	sound.playSong("Hidden Valley")
 end
+if game.PlaceId == 7390543558 then
+	sound.playSong("Build Env")
+end
 
 game.ReplicatedStorage:WaitForChild("events"):WaitForChild("playLocalSound").OnClientEvent:Connect(function(soundId)
 	sound.playLocalSound(soundId)

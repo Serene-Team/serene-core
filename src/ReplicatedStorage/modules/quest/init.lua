@@ -6,7 +6,7 @@
 
 local module = {}
 local class = require(script.class)
-local ridge = require(game.ReplicatedStorage.modules.ridge)
+local ridge = require(game.ReplicatedStorage:WaitForChild("modules").ridge)
 
 function getQuestProfile(player)
     local playerDataStore = ridge.getPlayerDataStore(player)

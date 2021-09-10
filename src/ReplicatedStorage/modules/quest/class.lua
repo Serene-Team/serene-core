@@ -3,7 +3,7 @@ quest.__index = quest
 quest.questData = {}
 quest.modulePath = nil
 -- modules
-local ridge = require(game.ReplicatedStorage.modules.ridge)
+local ridge = require(game.ReplicatedStorage:WaitForChild("modules").ridge)
 
 -- core functions
 

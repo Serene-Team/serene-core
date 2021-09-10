@@ -1,4 +1,4 @@
-local network = require(game.ReplicatedStorage.modules.network)
+local network = require(game.ReplicatedStorage:WaitForChild("modules").network)
 
 
 -- create a empty event for the client

@@ -4,7 +4,7 @@
     Author: oldmilk
 --]]
 
-local quest = require(game.ReplicatedStorage.modules.quest)
+local quest = require(game.ReplicatedStorage:WaitForChild("modules").quest)
 
 game.Players.PlayerAdded:Connect(function(player)
     quest.loadQuestData(player)

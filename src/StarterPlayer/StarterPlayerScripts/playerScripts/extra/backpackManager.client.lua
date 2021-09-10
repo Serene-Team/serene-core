@@ -12,13 +12,13 @@ local network = require(game.ReplicatedStorage.modules.network)
 local gui = require(game.ReplicatedStorage.modules.client.gui)
 -- globals
 local player = game.Players.LocalPlayer
-local backpack = player:WaitForChild("Backpack")
 local backpackGuiSource = game.ReplicatedStorage:WaitForChild("gui"):WaitForChild("backpackView")
 
 -- functions
 function openBackpack()
-    print("Loading items")
-    local items = backpack:GetChildren()
+	print("Loading items")
+	local backpack = player:WaitForChild("Backpack")
+	local items = backpack:GetChildren()
     local backpackGui = backpackGuiSource:Clone()
     backpackGui.Parent = player.PlayerGui
     -- remove buttons
@@ -53,9 +53,12 @@ end
 
 -- create network items
 print("creating new network objects")
-local openBackpackEvent = network.bindableEvent("openUserBackpack", function()
-    openBackpack()
-end)
+local openBackpackEvent = game.ReplicatedStorage:WaitForChild("events"):FindFirstChild("openUserBackpack")
+if openBackpackEvent == nil  then
+	openBackpackEvent = network.bindableEvent("openUserBackpack", function()
+		openBackpack()
+	end)	
+end
 print("awaiting user input.")
 -- wait for user input
 userInputService.InputBegan:Connect(function (input, isProcessed)

@@ -7,11 +7,16 @@ IconController.setGameTheme(Themes["BlueGradient"])
 
 local stats = icon.new()
 stats:setImage(7230252017)
-stats:setLabel("Stats")
+stats:setLabel("Stat Book")
 stats:bindEvent("selected", function ()
-	print("bob")
+	game.ReplicatedStorage:WaitForChild("events").openStatBook:Fire()
 end)
-
+stats:bindEvent("deselected", function()
+	local statsGui = game.Players.LocalPlayer.PlayerGui:FindFirstChild("statBook")
+	if statsGui ~= nil then
+		statsGui:Destroy()
+	end
+end)
 local book = icon.new()
 book:setImage(7230254493)
 book:setLabel("Ability Book")

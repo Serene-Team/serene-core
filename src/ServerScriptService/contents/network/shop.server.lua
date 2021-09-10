@@ -1,15 +1,9 @@
-local network = require(game.ReplicatedStorage.modules.network)
-local itemModule = require(game.ReplicatedStorage.modules.item)
-local currency = require(game.ReplicatedStorage.modules.currency)
-local backpack = require(game.ReplicatedStorage.modules.backpack)
+local network = require(game.ReplicatedStorage:WaitForChild("modules").network)
+local itemModule = require(game.ReplicatedStorage:WaitForChild("modules").item)
+local currency = require(game.ReplicatedStorage:WaitForChild("modules").currency)
 network.remotefunction("confirmPurchase", function (player, item, shopId, amount)
 	-- lookup item info
 	local itemInfo = itemModule.getInfo(item)
-	if itemInfo.error == true then
-		warn("Failed to confirm purchase: "..itemInfo.type)
-		return "fail"
-	end
-	itemInfo = itemInfo.data
 	local shops = itemInfo.shops
 	if shops[shopId] == nil then
 		warn("Failed to confirm purchase: item not sold at current shop, database out of date?")

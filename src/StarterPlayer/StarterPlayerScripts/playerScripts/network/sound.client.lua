@@ -1,0 +1,5 @@
+local playLocalSoundEffect = game.ReplicatedStorage:WaitForChild("events"):WaitForChild("playLocalSoundEffect")
+local sound = require(game.ReplicatedStorage:WaitForChild("modules").client.sound)
+playLocalSoundEffect.OnClientEvent:Connect(function(soundEffect)
+    sound.playSoundEffect(soundEffect)
+end)
