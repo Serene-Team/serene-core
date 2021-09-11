@@ -62,8 +62,6 @@ module.grantXp = function(player, amount)
     local givenAmount = currentXp + amount
     local xpToLevel = levelsMath.xpToLevelUp(currentLevel)
     if givenAmount >= xpToLevel then
-        print(givenAmount)
-        print(xpToLevel)
         module.resetXp(player)
         module.grantLevel(player, 1)
         -- extra.make(player.Name.." has reached level "..(currentLevel + 1).."!", Color3.fromRgb(255,170,29), 18)
