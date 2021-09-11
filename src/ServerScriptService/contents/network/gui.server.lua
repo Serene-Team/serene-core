@@ -9,3 +9,6 @@ end)
 network.event("makeChatMessage", function()
     
 end)
+network.event("showStatPointAlerts", function()
+    
+end)

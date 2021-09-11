@@ -48,6 +48,11 @@ module.grantLevel = function(player, levels)
     local currentLevel = module.getLevel(player)
     local givenLevel = currentLevel + levels
     playerProfile:setAsync("currentLevel", givenLevel)
+    extra.makeChatMessageGlobal(player.Name.." has reached "..givenLevel.."!", Color3.fromRGB(255,170,29), 18)
+    extra.makeChatMessage(player, "+3 stat points are now avalible in the skill book", Color3.fromRGB(255,170,29), 18)
+    game.ReplicatedStorage:WaitForChild("events"):WaitForChild("showStatPointAlerts"):FireClient(player, (3 * levels))
+    playerStats.giveInvestPoints(player, (3 * levels))
+    playLevelUpSound(player)
 end
 module.resetXp = function(player)
     local playerProfile = ridge.getPlayerDataStore(player)
@@ -64,11 +69,7 @@ module.grantXp = function(player, amount)
     if givenAmount >= xpToLevel then
         module.resetXp(player)
         module.grantLevel(player, 1)
-        -- extra.make(player.Name.." has reached level "..(currentLevel + 1).."!", Color3.fromRgb(255,170,29), 18)
-        -- extra.makeChatMessage(player, "+3 stat points are avalible in the stat book", Color3.fromRgb(50,205,50), 18)
-        playLevelUpSound(player)
         resetXpbar(player)
-        playerStats.giveInvestPoints(player, 3)
     else
         updateXpBar(player)
     end

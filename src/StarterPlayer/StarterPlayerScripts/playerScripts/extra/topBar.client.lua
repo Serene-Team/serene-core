@@ -3,11 +3,26 @@ local icon = require(game.ReplicatedStorage:WaitForChild("modules").vendor.Icon)
 local iconFolder = game.ReplicatedStorage:WaitForChild("modules").vendor.Icon
 local IconController = require(iconFolder.IconController)
 local Themes = require(iconFolder.Themes)
+local showStatPointAlerts = game.ReplicatedStorage:WaitForChild("events"):WaitForChild("showStatPointAlerts")
 IconController.setGameTheme(Themes["BlueGradient"])
 
 local stats = icon.new()
 stats:setImage(7230252017)
 stats:setLabel("Stat Book")
+-- network events
+showStatPointAlerts.OnClientEvent:Connect(function(statPoints)
+	local tick = 1
+	while true do
+		if tick == statPoints then
+			print("alerted user of statpoints!")
+			break
+		end
+		stats:notify()
+		task.wait(0.1)
+		tick += 1
+	end
+	stats:notify()
+end)
 stats:bindEvent("selected", function ()
 	game.ReplicatedStorage:WaitForChild("events").openStatBook:Fire()
 end)
