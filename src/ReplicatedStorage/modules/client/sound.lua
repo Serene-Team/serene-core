@@ -11,7 +11,8 @@ local sounds = {
 	["Build Env"] = 1841226234
 }
 local soundEffects = {
-    ["getCoins"] = 607665037
+    ["getCoins"] = 607665037,
+    ["levelUp"] = 5736400107
 }
 module.playSong = function(place)
     if sounds[place] == nil then

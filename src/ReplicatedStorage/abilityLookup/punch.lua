@@ -14,7 +14,7 @@ module.baseConfig = {
 module.playerConfig = {
     currentCooldown = 0
 }
-module.event = {
+module.events = {
     -- onUse: used when the player uses the ability
     onUse = function(player)
         local coreLib = module.coreLib
