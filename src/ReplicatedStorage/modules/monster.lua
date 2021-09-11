@@ -25,12 +25,14 @@ local function GetNearestPlayer(minimumDistance, NPC)
 		local Character = v.Character
 		if (Character) then
 			local humanoid = Character.Humanoid
-			local HRP = Character.HumanoidRootPart
-			if (humanoid.Health > 0) then
-				local mag = (NPC.Position - HRP.Position).Magnitude
-				if (mag <= closestMagnitude) then
-					closestPlayer = v
-					closestMagnitude = mag
+			if Character:FindFirstChild("HumanoidRootPart") ~= nil then
+				local HRP = Character.HumanoidRootPart
+				if (humanoid.Health > 0) then
+					local mag = (NPC.Position - HRP.Position).Magnitude
+					if (mag <= closestMagnitude) then
+						closestPlayer = v
+						closestMagnitude = mag
+					end
 				end
 			end
 		end

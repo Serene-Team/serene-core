@@ -20,6 +20,7 @@ function openBackpack()
 	local backpack = player:WaitForChild("Backpack")
 	local items = backpack:GetChildren()
     local backpackGui = backpackGuiSource:Clone()
+    gui.setupDraggableWindow(backpackGui.Frame)
     backpackGui.Parent = player.PlayerGui
     -- remove buttons
     for i, v in pairs(backpackGui.Frame.items:GetChildren()) do

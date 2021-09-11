@@ -1,6 +1,7 @@
 local module = {}
 local mathLibrary = require(game.ReplicatedStorage:WaitForChild("modules").math)
 local gameDatabase = require(game.ReplicatedStorage:WaitForChild("modules").gameDatabase)
+local DraggableObject	= require(script.Parent.DraggableObject)
 module.getGameUi = function()
 	local ui = game.Players.LocalPlayer.PlayerGui:WaitForChild("gameUi")
 	return ui
@@ -68,6 +69,14 @@ module.showItemAlert = function(itemName)
 		Text = "Backpack",
 		Icon = "rbxassetid://"..itemIcon
 	})
+end
+-- setupDraggableWindow: setup a draggable window
+module.setupDraggableWindow = function(guiObject)
+	if not guiObject:IsA("GuiObject") then
+		error("setupDraggableWindow only works on GuiObjects")
+	end
+	local FrameDrag = DraggableObject.new(guiObject)
+	FrameDrag:Enable()
 end
 -- showCurrencyAlert: show alert 
 module.showCurrencyAlert = function(currency, subtract)

@@ -9,6 +9,7 @@ network.bindableEvent("openStatBook", function ()
 		local statBook = game.ReplicatedStorage:WaitForChild("gui").statBook:Clone()
 		statBook.Parent = player.PlayerGui	
 		gui.waitForMouseover(statBook.Frame.close, "Close window")
+		gui.setupDraggableWindow(statBook.Frame)
 		statBook.Frame.close.MouseButton1Click:Connect(function ()
 			statBook:Destroy()
 		end)
