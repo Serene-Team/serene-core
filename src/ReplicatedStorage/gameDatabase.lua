@@ -34,7 +34,8 @@ database.items = {
 		loadId = 7234916884,
 		icon = 7335856220,
 		shops = {
-			johnAshtown = 20
+			johnAshtown = 20,
+			adminShop = 1
 		}
 	},
 	woodenSword = {
@@ -43,7 +44,18 @@ database.items = {
 		loadId = 7312327359,
 		icon = 7254489223,
 		shops = {
-			johnAshtown = 15
+			johnAshtown = 15,
+			adminShop = 1
+		}
+	},
+	healthPotion = {
+		name = "Health Potion",
+		itemId = "healthPotion",
+		loadId = 7464532589,
+		icon = 7464730973,
+		shops = {
+			johnAshtown = 60,
+			adminShop = 1
 		}
 	}
 }

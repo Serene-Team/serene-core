@@ -1,6 +1,6 @@
 return {
-    shopTitle = "John's Market",
-    shopId = "johnAshtown",
+    shopTitle = "Admin NPC",
+    shopId = "adminShop",
     items = {
         "cookie",
         "woodenSword",

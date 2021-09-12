@@ -26,7 +26,6 @@ module.importFromModule = function(path)
     if not path:IsA("ModuleScript") then
         error("Failed to load quest data: given Instance must be of class ModuleScript")
     end
-    local questData = require(path)
     local coreData = {
         questData = require(path),
         modulePath = path
