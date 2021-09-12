@@ -12,3 +12,6 @@ end)
 network.event("showStatPointAlerts", function()
     
 end)
+network.event("openClientShop", function()
+    
+end)

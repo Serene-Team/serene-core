@@ -29,7 +29,7 @@ database.lootTables = {
 -- shops: a table of shopIds that the item is sold at, and for what price
 database.items = {
 	cookie = {
-		name = "cookie",
+		name = "Cookie",
 		itemId = "cookieItem",
 		loadId = 7234916884,
 		icon = 7335856220,

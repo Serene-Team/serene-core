@@ -4,7 +4,7 @@ proximityPrompt.PromptShown:Connect(function (prompt, input)
 	if prompt.Enabled then
 		local promptUi = gui:Clone()
 		promptUi.Adornee = prompt.Parent
-		promptUi.Frame.ActionText.Text = prompt.ActionText
+		promptUi.Frame.actionText.Text = prompt.ActionText
 		promptUi.Parent = prompt.Parent
 	end
 end)

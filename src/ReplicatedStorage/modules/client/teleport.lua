@@ -15,7 +15,8 @@ local placeDesc = {
 local placeIcons = {
     ["Serene"] = "rbxassetid://7193700987",
     ["Ashtown"] = "rbxassetid://7360092928",
-    ["Build Env"] = "rbxassetid://7435398715"
+    ["Build Env"] = "rbxassetid://7435398715",
+    ["Hidden Valley"] = "rbxassetid://7457727315"
 }
 
 

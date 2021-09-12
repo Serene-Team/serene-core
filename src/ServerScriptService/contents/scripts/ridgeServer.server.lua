@@ -32,12 +32,11 @@ function saveData(player)
         error(errorMessage)
     end
 end
-local ridge = require(game.ReplicatedStorage:WaitForChild("modules").ridge)
 local backpack = require(game.ReplicatedStorage:WaitForChild("modules").backpack)
 game.Players.ChildRemoved:Connect(function(player)
 	if player:GetAttribute("taken") == nil then
 		player:SetAttribute("taken", true)
-		backpack.saveBackpack(player, false)
+        backpack.saveBackpack(player)
 		saveData(player)	
 	end
 end)
@@ -46,7 +45,7 @@ game:BindToClose(function()
 	for i, player in pairs(game.Players:GetChildren()) do
 		if player:GetAttribute("taken") == nil then
 			player:SetAttribute("taken", true)
-			backpack.saveBackpack(player)
+            backpack.saveBackpack(player)
 			saveData(player)
 		end
     end
