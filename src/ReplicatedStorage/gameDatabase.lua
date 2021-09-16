@@ -27,6 +27,7 @@ database.lootTables = {
 -- name: nothing really, just the name of the item
 -- itemId: the id of the item, not used in code
 -- shops: a table of shopIds that the item is sold at, and for what price
+-- every item should be sold at the admin shop for 1 coin
 database.items = {
 	cookie = {
 		name = "Cookie",
