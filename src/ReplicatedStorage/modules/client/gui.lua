@@ -6,6 +6,28 @@ module.getGameUi = function()
 	local ui = game.Players.LocalPlayer.PlayerGui:WaitForChild("gameUi")
 	return ui
 end
+module.showNote = function(noteConfig)
+	if noteConfig.title == nil then
+		error("Failed to show note: noteConfig.title is nil")
+	elseif noteConfig.text == nil then
+		error("Failed to show note: noteConfig.text is nil")
+	end
+	local player = game.Players.LocalPlayer
+	if player:GetAttribute("hasOpenNote") == nil then
+		player:SetAttribute("hasOpenNote", true)
+		-- Open the gui
+		player.PlayerGui.gameUi.note.Visible = true
+		player.PlayerGui.gameUi.note.title.Text = noteConfig.title
+		player.PlayerGui.gameUi.note.text.Text = noteConfig.text
+		module.waitForMouseover(player.PlayerGui.gameUi.note.close, "Close Note")
+		module.setupDraggableWindow(player.PlayerGui.gameUi.note)
+		player.PlayerGui.gameUi.note.close.MouseButton1Click:Connect(function()
+			player.PlayerGui.gameUi.note.Visible = false
+		end)
+	else
+		warn("Note already open!")
+	end
+end
 module.waitForMouseover = function (uiObject, text)
 	if not uiObject:IsA("GuiObject") then
 		error("waitForMouseover only works on GuiObjects")

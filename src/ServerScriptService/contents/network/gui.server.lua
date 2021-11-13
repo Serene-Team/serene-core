@@ -15,3 +15,6 @@ end)
 network.event("openClientShop", function()
     
 end)
+network.event("openClientNote", function()
+    
+end)

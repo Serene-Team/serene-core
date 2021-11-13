@@ -1,6 +1,7 @@
 local updateXpBar = game.ReplicatedStorage.events:WaitForChild("updateXpBar")
 local gui = require(game.ReplicatedStorage:WaitForChild("modules").client.gui)
 local makeChatMessage = game.ReplicatedStorage.events:WaitForChild("makeChatMessage")
+local openClientNote = game.ReplicatedStorage.events:WaitForChild("openClientNote")
 local sendItemAlert = game.ReplicatedStorage.events:WaitForChild("sendItemAlert")
 local currencyAlert = game.ReplicatedStorage.events:WaitForChild("sendCurrencyAlert")
 updateXpBar.OnClientEvent:Connect(function(xp, currentLevel)
@@ -19,4 +20,7 @@ currencyAlert.OnClientEvent:Connect(function(currency, eventType)
     else
         gui.showCurrencyAlert(currency, false)    
     end
+end)
+openClientNote.OnClientEvent:Connect(function (noteConfig)
+    gui.showNote(noteConfig)
 end)
