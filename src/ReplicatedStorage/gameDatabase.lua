@@ -39,6 +39,26 @@ database.items = {
 			adminShop = 1
 		}
 	},
+	rake = {
+		name = "Rake",
+		itemId = "rake",
+		loadId = 7985136128,
+		icon = 7985103308,
+		shops = {
+			adminShop = 1,
+			hiddenValley = 50
+		}
+	},
+	axe = {
+		name = "Axe",
+		itemId = "axe",
+		loadId = 7986634183,
+		icon = 7986678129,
+		shops = {
+			adminShop = 1,
+			hiddenValley = 100
+		}
+	},
 	woodenSword = {
 		name = "Wooden Sword",
 		itemId = "woodenSword",

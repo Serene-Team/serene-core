@@ -1,9 +1,8 @@
 return {
-    shopTitle = "Admin NPC",
-    shopId = "adminShop",
+    shopTitle = "Hidden Valley General Store",
+    shopId = "hiddenValley",
     items = {
         "cookie",
-        "woodenSword",
         "healthPotion",
         "rake",
         "axe"
