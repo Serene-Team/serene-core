@@ -96,8 +96,13 @@ function forgeClass:swing()
 	local damagePerPoint = 6
 	local damageAdd = strPoints * damagePerPoint
 	-- do da math
-	local maxDamage = damageConfig.max + damageAdd
+    -- NOTE: Only boost the min damage, cause if we boost the max then any weapon can become OP
 	local minDamage = damageConfig.min + damageAdd
+    -- Prevent bug
+    if (damageConfig.min + damageAdd) > damageConfig.max then
+        minDamage = damageConfig.max - 1
+    end
+    local maxDamage = damageConfig.max
     -- check if server pvp is enabled.
     local serverPvpEnabled = game.ServerStorage:FindFirstChild("pvpEnabled")
     -- calculate the damage in the range of maxDamage, and minDamage
