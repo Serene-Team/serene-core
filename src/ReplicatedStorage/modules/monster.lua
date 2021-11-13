@@ -10,6 +10,7 @@ local tweenService = game:GetService("TweenService")
 local HttpService = game:GetService("HttpService")
 local item = require(game.ReplicatedStorage:WaitForChild("modules").item)
 local levels = require(game.ReplicatedStorage:WaitForChild("modules").levels)
+local gameDatabase = require(game.ReplicatedStorage:WaitForChild("modules").gameDatabase)
 -- init module
 local module = {}
 local monsterClass = {}
@@ -65,10 +66,10 @@ function monsterClass:setReward(loot_table)
 			end
 		end
 		-- drop the items
-		item.dropItems(loot_data.data.loot_data, players)
+		item.dropItems(loot_data.loot_data, players)
 		-- give xp, and remove tags
 		for i, player in pairs(players) do
-			levels.grantXp(player, loot_data.data.loot_xp)
+			levels.grantXp(player, loot_data.loot_xp)
 			if player:GetAttribute("Damage") ~= nil then
 				player:SetAttribute("Damage", nil)
 			end
@@ -180,10 +181,9 @@ module.register = function(root)
 	end
 	return self
 end
--- getLootInfo: returns the loot info for a monster from the REST api
+-- getLootInfo: returns the loot info for a monster from the game database
 function module.getLootInfo(monster)
-	local rawData = HttpService:GetAsync("http://serene-api.herokuapp.com/loot_table/"..monster)
-	local info = HttpService:JSONDecode(rawData)
+	local info = gameDatabase.getLootTable(monster)
 	return info
 end
 

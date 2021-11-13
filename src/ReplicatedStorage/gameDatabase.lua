@@ -2,7 +2,7 @@ local database = {}
 
 -- list of all of the in-game loot tables
 database.lootTables = {
-	guardianMage = {
+	forestMage = {
 		loot_data = {
 			cookie = { 
 				drop_chance = 20

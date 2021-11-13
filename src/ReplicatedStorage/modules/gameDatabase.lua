@@ -23,7 +23,7 @@ end
 -- getLootTable: returns the raw loot table data for a given mob
 function module.getLootTable(mobName)
     local gameConfig = require(game.ReplicatedStorage:WaitForChild("gameDatabase"))    
-    if gameConfig["lootTables"][mobName] == nil then
+    if gameConfig.lootTables[mobName] == nil then
         error("Failed to lookup: invalid mobName")
     else
         return gameConfig["lootTables"][mobName]
