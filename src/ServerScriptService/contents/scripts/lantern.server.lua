@@ -10,7 +10,7 @@ function setLanternEnabled(enabled)
     end
     print("Job complete")
 end
-
+setLanternEnabled(false)
 while true do
     local time = game.Lighting.ClockTime
     if time >= activateTime then
