@@ -18,3 +18,9 @@ end)
 network.event("openClientNote", function()
     
 end)
+network.event("sendCurrencyAlert", function()
+	
+end)
+network.event("sendItemAlert", function()
+		
+end)

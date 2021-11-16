@@ -6,13 +6,26 @@
 
 -- services
 local userInputService = game:GetService("UserInputService")
-local runService = game:GetService("RunService")
 -- modules
 local network = require(game.ReplicatedStorage.modules.network)
 local gui = require(game.ReplicatedStorage.modules.client.gui)
 -- globals
 local player = game.Players.LocalPlayer
 local backpackGuiSource = game.ReplicatedStorage:WaitForChild("gui"):WaitForChild("backpackView")
+local computeItemInfoForPlayer = game.ReplicatedStorage:WaitForChild("events"):WaitForChild("computeItemInfoForPlayer")
+
+function displayItemInfo(gui, tool)
+    print("loading item info...")
+    local itemInfo = computeItemInfoForPlayer:InvokeServer(tool)
+    gui.Frame.itemInfo.title.Text = tool.Name
+    if itemInfo.error ~= "NotWeapon" then
+        gui.Frame.itemInfo.minDmg.Text = "Item min damage: "..itemInfo.minDamage
+        gui.Frame.itemInfo.maxDmg.Text = "Item max damage: "..itemInfo.maxDamage    
+    else
+        gui.Frame.itemInfo.minDmg.Text = "Item min damage: ??"
+        gui.Frame.itemInfo.maxDmg.Text = "Item max damage: ??"
+    end
+end
 
 -- functions
 function openBackpack()
@@ -36,6 +49,9 @@ function openBackpack()
         button.Visible = true
         button.icon.Image = item.TextureId
         gui.waitForMouseover(button, item.Name)
+        local btnConnect = button.icon.MouseEnter:Connect(function()
+            displayItemInfo(backpackGui, item)
+        end)
         button.icon.InputBegan:Connect(function(input)
             print("Equiped tool.")
             if input.UserInputType == Enum.UserInputType.MouseButton1 then

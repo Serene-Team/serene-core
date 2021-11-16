@@ -53,6 +53,15 @@ function forgeClass:setValue(key, value)
     if self.config[key] ~= nil then
 		warn("data overwrited.")	
     end
+    -- Write damage config into tool
+    if key == "damage" then
+        if value.min ~= nil then
+            self.tool:SetAttribute("damageMax", value.max) 
+        end
+        if value.min ~= nil then
+            self.tool:SetAttribute("damageMin", value.min) 
+        end
+    end
     self.config[key] = value
 end
 
@@ -152,6 +161,7 @@ forge.register = function(tool)
     local self = {
         tool = tool
     }
+    tool:SetAttribute("isForgeWeapon", true)
     setmetatable(self, forgeClass)
     return self
 end
