@@ -35,6 +35,28 @@ function openBackpack()
     local backpackGui = backpackGuiSource:Clone()
     gui.setupDraggableWindow(backpackGui.Frame)
     backpackGui.Parent = player.PlayerGui
+    local addConnect = backpack.ChildAdded:Connect(function(item)
+        -- Refresh
+        local button = backpackGui.Frame.itemTemplate:Clone()
+        button.Name = item.Name
+        button.Parent = backpackGui.Frame.items
+        button.Visible = true
+        button.icon.Image = item.TextureId
+        gui.waitForMouseover(button, item.Name)
+        local btnConnect = button.icon.MouseEnter:Connect(function()
+            displayItemInfo(backpackGui, item)
+        end)
+        button.icon.InputBegan:Connect(function(input)
+            print("Equiped tool.")
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                print("Equiped tool.")
+                player.Character.Humanoid:EquipTool(item)
+            end
+        end)
+    end)
+    local removeConnect = backpack.ChildRemoved:Connect(function(item)
+        backpackGui.Frame.items[item.Name]:Destroy()
+    end)
     -- remove buttons
     for i, v in pairs(backpackGui.Frame.items:GetChildren()) do
         if v.ClassName == "Frame" then
@@ -64,6 +86,8 @@ function openBackpack()
     print("Loading extra gui.")
     gui.waitForMouseover(backpackGui.Frame.close, "Close window")
     backpackGui.Frame.close.MouseButton1Click:Connect(function ()
+        addConnect:Disconnect()
+        removeConnect:Disconnect()
         backpackGui:Destroy()
     end)
 end
