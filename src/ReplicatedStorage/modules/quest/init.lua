@@ -36,22 +36,28 @@ end
 --loadQuestData: execute events when the player joins the game for quests
 module.loadQuestData = function(player)
     local questProfile = getQuestProfile(player)
+    print("Loading quest info for loadQuestData")
+    print(questProfile)
     local quests = questProfile["currentQuests"]
     if quests == nil then
         print("nothing to update, player is not doing any quests.")
     else
         for questIndex, quest in pairs(quests) do
-            local questModule = require(game.ReplicatedStorage.questLookup:FindFirstChild(questIndex))
-            -- execute player join event
-            local events = questModule["events"]
-            if events["playerStartedQuest"] ~= nil then
-                local returnValue = events.playerStartedQuest(player)
-                if returnValue["client"] ~= nil then
-                    returnValue.client:FireClient(player)
+            if game.ReplicatedStorage.questLookup:FindFirstChild(questIndex) ~= nil then
+                local questModule = require(game.ReplicatedStorage.questLookup:FindFirstChild(questIndex))
+                -- execute player join event
+                local events = questModule["events"]
+                if events["playerStartedQuest"] ~= nil then
+                    local returnValue = events.playerStartedQuest(player)
+                    if returnValue["client"] ~= nil then
+                     returnValue.client:FireClient(player)
+                    end
                 end
+                -- remove quest module
+                questModule = nil 
+            else
+                warn("Invalid quest name.")
             end
-            -- remove quest module
-            questModule = nil
         end
     end
 end

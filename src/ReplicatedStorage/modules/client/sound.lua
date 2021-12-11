@@ -8,7 +8,8 @@ local soundService = game:GetService("SoundService")
 local sounds = {
     ["Ashtown"] = 1842245588,
 	["Hidden Valley"] = 7107135525,
-	["Build Env"] = 1841226234
+	["Build Env"] = 1841226234,
+    ["Forgotten Passage"] = 1840493296
 }
 local soundEffects = {
     ["getCoins"] = 607665037,

@@ -8,6 +8,9 @@ end
 if game.PlaceId == 7390543558 then
 	sound.playSong("Build Env")
 end
+if game.PlaceId == 8158821463 then
+	sound.playSong("Forgotten Passage")
+end
 
 game.ReplicatedStorage:WaitForChild("events"):WaitForChild("playLocalSound").OnClientEvent:Connect(function(soundId)
 	sound.playLocalSound(soundId)

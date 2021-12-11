@@ -27,29 +27,31 @@ local bColorList = {255,255,255,255,255,255,110,135,255,255,255,255,255,255,255,
 local r
 local g
 local b
-while true do
-     --time changer
-     mam = game.Lighting:GetMinutesAfterMidnight() + timeShift
-     game.Lighting:SetMinutesAfterMidnight(mam)
-     mam = mam/60
-
-     --brightness
-     game.Lighting.Brightness = amplitudeB*math.cos(mam*(pi/12)+pi)+offsetB
-
-     --outdoor ambient
-     var=amplitudeO*math.cos(mam*(pi/12)+pi)+offsetO
-     game.Lighting.OutdoorAmbient = Color3.fromRGB(var,var,var)
-
-     --shadow softness
-     game.Lighting.ShadowSoftness = amplitudeS*math.cos(mam*(pi/6))+offsetS
-
-     --color shift top
-     pointer= math.clamp(math.ceil(mam), 1, 24)
-     r=((rColorList[pointer%24+1]-rColorList[pointer])*(mam-pointer+1))+rColorList[pointer]
-     g=((gColorList[pointer%24+1]-gColorList[pointer])*(mam-pointer+1))+gColorList[pointer]
-     b=((bColorList[pointer%24+1]-bColorList[pointer])*(mam-pointer+1))+bColorList[pointer]
-     game.Lighting.ColorShift_Top=Color3.fromRGB(r,g,b)
-
-     --tick
-     wait(waitTime)
+if game.ServerStorage:FindFirstChild("disableNightCycle") == nil then
+     while true do
+          --time changer
+          mam = game.Lighting:GetMinutesAfterMidnight() + timeShift
+          game.Lighting:SetMinutesAfterMidnight(mam)
+          mam = mam/60
+     
+          --brightness
+          game.Lighting.Brightness = amplitudeB*math.cos(mam*(pi/12)+pi)+offsetB
+     
+          --outdoor ambient
+          var=amplitudeO*math.cos(mam*(pi/12)+pi)+offsetO
+          game.Lighting.OutdoorAmbient = Color3.fromRGB(var,var,var)
+     
+          --shadow softness
+          game.Lighting.ShadowSoftness = amplitudeS*math.cos(mam*(pi/6))+offsetS
+     
+          --color shift top
+          pointer= math.clamp(math.ceil(mam), 1, 24)
+          r=((rColorList[pointer%24+1]-rColorList[pointer])*(mam-pointer+1))+rColorList[pointer]
+          g=((gColorList[pointer%24+1]-gColorList[pointer])*(mam-pointer+1))+gColorList[pointer]
+          b=((bColorList[pointer%24+1]-bColorList[pointer])*(mam-pointer+1))+bColorList[pointer]
+          game.Lighting.ColorShift_Top=Color3.fromRGB(r,g,b)
+     
+          --tick
+          wait(waitTime)
+     end  
 end

@@ -1,6 +1,7 @@
 local module = {}
 local playerList = require(game.ReplicatedStorage:WaitForChild("modules").playerlist)
 local backpack = require(game.ReplicatedStorage:WaitForChild("modules").backpack)
+local quest = require(game.ReplicatedStorage:WaitForChild("modules").quest)
 local levels = require(game.ReplicatedStorage:WaitForChild("modules").levels)
 local statPoints = require(game.ReplicatedStorage:WaitForChild("modules").playerStat)
 local teleportServer = require(game.ReplicatedStorage:WaitForChild("modules").teleportServer)
@@ -11,6 +12,7 @@ function addPlayer(player)
 	local backpackFolder = Instance.new("Folder")
 	backpackFolder.Name = player.Name
 	backpackFolder.Parent = game.ServerStorage
+	quest.loadQuestData(player)
 	player.CharacterAdded:Connect(function()
 		backpack.loadBackpack(player)
 		backpack.autoSave(player)
