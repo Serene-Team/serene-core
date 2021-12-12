@@ -62,7 +62,8 @@ function quest:updateQuestData(player, key, value)
     if keyData == nil then
         warn("data in dataStore is nil, this will create a new value. its recommended to only update existing values")
     end
-    quests[questName].questData[key] = value
+    -- Set the value of the data
+    questProfile.currentQuests[questName].questData[key] = value
     setQuestProfile(player, questProfile)
 end
 --completeQuest: completes the quest for a player if the questData matches the final quest data
